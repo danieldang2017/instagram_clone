@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "A clone website of Instagram.",
   "main": "server.js",
-  "repository": "",
-  "author": "Daniel Dang <tdang3618@conestogac.on.ca>",
+  "repository": "https://github.com/danieldang2017/instagram_clone.git",
+  "author": "Tran Ngoc Phuong Dang <tdang3618@conestogac.on.ca>; Chi Hieu Tran <htran2026@conestogac.on.ca>; Duncan Robertson <drobertson4833@conestogac.on.ca> ",
   "dependencies": {
     "express": "~3.2.4",
     "mongodb": "^2.2.27",

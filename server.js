@@ -2,49 +2,15 @@
 //
 // A simple server to serve the Instagram clone website.
 //
+
+
 var http = require('http');
 var path = require('path');
 var Post = require('./models/Post.js');
 var User = require('./models/User.js');
-
 var express = require('express');
 var mongoose = require('mongoose');
-
 mongoose.connect('mongodb://instaadmin1:webadmin123@ds119682.mlab.com:19682/instagramdb')
-
-/*var post = new Post({
-  userId: '5',
-  image: 'image.jpg',
-  comment: 'hi',
-  hashTag: 'h',
-  likeCount: 1,
-  feedbackCount: 1
-})
-
-post.save((err) => {
-  if(err) {
-    console.log('An error occurred\n' + err);
-  } else {
-    console.log('Successful post');
-  }
-})
-
-var user = new User({
-  userId: '5',
-  image: 'image.jpg',
-  comment: 'hi',
-  hashTag: 'h',
-  likeCount: 1,
-  feedbackCount: 1
-})
-
-user.save((err) => {
-  if(err) {
-    console.log('An error occurred\n' + err);
-  } else {
-    console.log('Successful post');
-  }
-})*/
 
 //
 // ## NodeJS server `NodeJSServer(obj)`
@@ -54,16 +20,41 @@ user.save((err) => {
 //
 var router = express();
 var server = http.createServer(router);
-
+//tell the router (ie. express) where to find static files
 router.use(express.static(path.resolve(__dirname, 'client')));
+//tell the router to parse JSON data for us and put it into req.body
+router.use(express.bodyParser());
+
 
 router.post('/loadUser', (req, res) => {
   User.find({userName: 'Daniel'})
+  .then((user) => {
+  //  console.log(user);
+    res.json(user);
+  });
+});
+
+// 20170613 by Winson
+// Load user information for main page
+router.post('/loadUserPost', function(req, res){
+   User.find({_id: req.body.id})
   .then((user) => {
     console.log(user);
     res.json(user);
   });
 });
+
+// 20170613 by Winson
+// Load post information by userID for main page
+router.post('/loadPost', function(req, res){
+   Post.find({userId: req.body.id})
+ // Post.find()
+  .then((post) => {
+    console.log(post);
+    res.json(post);
+  });
+});
+
 
 server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
   var addr = server.address();

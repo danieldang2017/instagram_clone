@@ -24,6 +24,9 @@ Duncan Robertson. Student number: 8074833 -->
 <script src="js/jquery.min.js"></script>
 
 <script>
+var User1Id = '593caf9c734d1d02258f2142';
+var User2Id = '593cb039734d1d02258f2168';
+
 function loadIntro() {
     Promise.resolve()
     .then(() => {
@@ -31,8 +34,46 @@ function loadIntro() {
     })
     .then((posts) => {
       console.log(posts);
-      displayName = posts.displayName;
       $('#displayName').html(posts[0].displayName);
+    });
+    
+// 20170613 by Winson
+// Load user information and posts for main page
+    loadUser(User1Id,1);
+    loadUserPost(User1Id,1)
+    loadUser(User2Id,2);
+    loadUserPost(User2Id,5)
+  }
+  
+
+// 20170613 by Winson
+// Load user information for main page
+  function loadUser(userID, loadIndex) {
+    Promise.resolve()
+    .then(() => {
+      return $.post('loadUserPost', {id : userID});
+    })
+    .then((users) => {
+      $('#UserName' + loadIndex).html(users[0].userName);
+      $('#FullName' + loadIndex).html(users[0].firstName + ' ' + users[0].lastName);
+      document.getElementById("postProfileImage" + loadIndex).src = "img/profile_img/" + users[0].imageProfile;
+    });
+  }
+  
+// 20170613 by Winson
+// Load user post information for main page
+    function loadUserPost(userID, loadIndex) {
+    Promise.resolve()
+    .then(() => {
+      return $.post('loadPost', {id : userID});
+    })
+    .then((posts) => {
+      for (var i = 0; i < 4; i++) 
+      {
+        document.getElementById("postImage" + (i+loadIndex)).src = "img/instagram_img/" + posts[i].image;
+        $('#postComment'+ (i+loadIndex)).html(posts[i].comment);
+        $('#postHashTag' + (i+loadIndex)).html(posts[i].hashTag);
+      }
     });
   }
 </script>
@@ -72,56 +113,81 @@ function loadIntro() {
   <!-- Gallery Section -->
   <div class="gallery">
    <div class="gallery_upper">
-      <img src="img/profile_img/kimkardashian.jpg" height="50px" class="profile" alt="Profile image">
-      <h4>kimkardashian<img alt="verified" src="img/icons/icon4.png"> <p>Kim Kardashian</p></h4>
+      <img src="" id="postProfileImage1" height="50px" class="profile" >
+      <h4>
+      <span id="UserName1"></span> 
+        <img alt="verified" src="img/icons/icon4.png">
+        <p id="FullName1"></p>
+      </h4>
       <button>Follow</button>
    </div>
-    <div class="thumbnail"> <a href="#"><img src="img/instagram_img/kimkardashian1.jpg" class="cards" alt="Photo of FIT TEA" /></a>
-      <h4>FIT TEA</h4>
-      <p class="text_column">Finally found <a href="">@fittea</a> shakes for protein, fiber, and probiotics. Perfect after my workouts 💪🏼 Fit Shakes tastes amazing</p>
-      <p class="tag">#ad</p>
+    <div class="thumbnail"> 
+    <a href="#">
+      <img src="" class="cards" id="postImage1"/>
+    </a>
+      <p class="text_column" id="postComment1"></p>
+      <p class="tag" id="postHashTag1"></p>
     </div>
-    <div class="thumbnail"> <a href="#"><img src="img/instagram_img/kimkardashian2.jpg" class="cards" alt="Photo of MY GRANDA" /></a>
-      <h4>MY GRANDMA</h4>
-      <p class="text_column">To the woman who started it all, my grandma MJ. You taught all of us girls to be strong independent women. I love you</p>
-      <p class="tag">#grandma #independentwomen</p>
+    <div class="thumbnail"> 
+    <a href="#">
+      <img src="" class="cards" id="postImage2"/>
+    </a>
+      <p class="text_column" id="postComment2"></p>
+      <p class="tag" id = "postHashTag2"></p>
     </div>
-    <div class="thumbnail"> <a href="#"><img src="img/instagram_img/kimkardashian3.jpg" class="cards" alt="Photo of THROWBACK TUESDAY" /></a>
-      <h4>THROWBACK TUESDAY</h4>
-      <p class="text_column">Throwback to when Kourtney & I were 9&10. Not sure what's cooler Allison's LA Raiders boxers or Kourt's Reebok pumps</p>
-      <p class="tag">#throwback #coolkids</p>
+    <div class="thumbnail">
+       <a href="#">
+         <img src="" class="cards" id="postImage3"/>
+        </a>
+      <p class="text_column" id="postComment3"></p>
+      <p class="tag" id="postHashTag3"></p>
     </div>
-    <div class="thumbnail"> <a href="#"><img src="img/instagram_img/kimkardashian4.jpg" class="cards" alt="Photo of COSTA RICA" /></a>
-      <h4>COSTA RICA</h4>
-      <p class="text_column">Me and my Sainty boo a few months ago...scroll through. Look at how adorable my little angel was. What a cutie.</p>
-      <p class="tag">#baby #cute #saintwest</p>
+    <div class="thumbnail">
+       <a href="#">
+         <img src="" class="cards" id="postImage4"/>
+         </a>
+      <p class="text_column" id="postComment4">
+      </p>
+      <p class="tag" id="postHashTag4"></p>
     </div>
   </div>
   <div class="gallery">
    <div class="gallery_upper">
-      <img src="img/profile_img/justintimberlake.jpg" height="50px" class="profile" alt="Profile photo">
-      <h4>justintimberlake<img alt="verified" src="img/icons/icon4.png"><p>Justin Timberlake</p></h4>
+      <img src="" id="postProfileImage2"  height="50px" class="profile" >
+      <h4> 
+      <span id="UserName2"> </span>
+        <img alt="verified" src="img/icons/icon4.png">
+      <p id="FullName2"></p>
+      </h4>
       <button>Follow</button>
    </div>
-    <div class="thumbnail"> <a href="#"><img src="img/instagram_img/justintimberlake1.jpg" class="cards" alt="Photo of GOLF DAY" /></a>
-      <h4>GOLF DAY</h4>
-      <p class="text_column"><a href="">@mac11</a> almost aced it! Fun day hanging and getting some golf in!</p>
-      <p class="tag">#gogrizzlies</p>
+    <div class="thumbnail"> 
+    <a href="#">
+      <img src="" class="cards" id="postImage5"/>
+    </a>
+      <p class="text_column" id="postComment5"></p>
+      <p class="tag" id="postHashTag5">#gogrizzlies</p>
     </div>
-    <div class="thumbnail"> <a href="#"><img src="img/instagram_img/justintimberlake2.jpg" class="cards" alt="Photo of GOOD BYE OLD FRIEND" /></a>
-      <h4>GOOD BYE OLD FRIEND</h4>
-      <p class="text_column">Where do I begin..? Words just aren't enough with heartache like this.</p>
-      <p class="tag">#rip #heartbreaking</p>
+    <div class="thumbnail"> 
+    <a href="#">
+      <img src=""  class="cards" id ="postImage6"/>
+    </a>
+      <p class="text_column" id="postComment6"></p>
+      <p class="tag" id="postHashTag6"></p>
     </div>
-    <div class="thumbnail"> <a href="#"><img src="img/instagram_img/justintimberlake3.jpg" class="cards" alt="Photo of HAPPY BIRTHDAY" /></a>
-      <h4>HAPPY BIRTHDAY</h4>
-      <p class="text_column">You make me laugh. You make me smile. Happy Birthday, my heart. </p>
-      <p class="tag">#happybirthday #mylove #soulmate</p>
+    <div class="thumbnail"> 
+    <a href="#">
+      <img src="" id="postImage7" class="cards"/>
+      </a>
+      <p class="text_column" id="postComment7"></p>
+      <p class="tag" id="postHashTag7"></p>
     </div>
-    <div class="thumbnail"> <a href="#"><img src="img/instagram_img/justintimberlake4.jpg" class="cards" alt="Photo of PEBBLE BEACH" /></a>
-      <h4>PEBBLE BEACH</h4>
-      <p class="text_column">What a day hanging with my boy, <a href="">@justinprose99</a> at Pebble Beach! </p>
-      <p class="tag">#beach #hangout</p>
+    <div class="thumbnail"> 
+    <a href="#">
+      <img src="" id="postImage8" class="cards"  />
+    </a>
+    <p class="text_column" id="postComment8"></p>
+    <p class="tag" id="postHashTag8"></p>
     </div>
   </div>
   <!-- Footer Section -->

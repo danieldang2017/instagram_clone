@@ -23,7 +23,7 @@ var server = http.createServer(router);
 //tell the router (ie. express) where to find static files
 router.use(express.static(path.resolve(__dirname, 'client')));
 //tell the router to parse JSON data for us and put it into req.body
-router.use(express.bodyParser());
+//router.use(express.bodyParser());
 
 
 router.post('/loadUser', (req, res) => {

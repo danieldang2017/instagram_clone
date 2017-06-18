@@ -35,6 +35,10 @@ function loadIntro() {
     .then((posts) => {
       console.log(posts);
       $('#displayName').html(posts[0].displayName);
+      document.getElementById("profileImg").src = "img/profile_img/" + posts[0].imageProfile;
+      $('#postCount').html(posts[0].postsCount);
+      $('#followerCount').html(posts[0].followersCount);
+      $('#followingCount').html(posts[0].followingCount);
     });
     
 // 20170613 by Winson
@@ -102,12 +106,12 @@ function loadIntro() {
   <section class="intro" >
     <div class="intro_column">
       <h3 id="displayName"></h3>
-      <img src="img/profile_img/davidbeckham.jpg" class="profile" alt="Profile image"> 
+      <img src="" class="profile" alt="Profile image" id="profileImg"> 
     </div>
     <div class="intro_column">
       <p><strong>Welcome to Instagram!</strong></p>
       <p>Follow accounts to see photos in your feed.</p>
-      <p><strong><i>967</i></strong> posts<span class="summary"><strong><i>250</i></strong> followers</span> <span class="summary"><strong><i>470</i></strong> following</span></p>
+      <p><strong><i id="postCount"></i></strong> posts<span class="summary"><strong><i id="followerCount"></i></strong> followers</span> <span class="summary"><strong><i id="followingCount"></i></strong> following</span></p>
     </div>
   </section>
   <!-- Gallery Section -->

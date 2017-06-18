@@ -6,6 +6,7 @@
   "repository": "https://github.com/danieldang2017/instagram_clone.git",
   "author": "Tran Ngoc Phuong Dang <tdang3618@conestogac.on.ca>; Chi Hieu Tran <htran2620@conestogac.on.ca>; Duncan Robertson <drobertson4833@conestogac.on.ca> ",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "~3.2.4",
     "mongodb": "^2.2.27",
     "mongoose": "^4.10.5"

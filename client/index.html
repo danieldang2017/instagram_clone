@@ -1,4 +1,3 @@
-<!doctype html>
 <!-- Group information:
 
 Student 1:
@@ -13,198 +12,166 @@ Student 3:
 
 Duncan Robertson. Student number: 8074833 -->
 
+<!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Instagram Clone</title>
+<!-- Adds CSS -->
 <link href="css/instagramClone.css" rel="stylesheet" type="text/css">
-
+<!-- Adds JQuery -->
 <script src="js/jquery.min.js"></script>
-
+<!-- JavaScript to load the contents of the page -->
 <script>
-var User1Id = '593caf9c734d1d02258f2142';
-var User2Id = '593cb039734d1d02258f2168';
-
-function loadIntro() {
+  // Function to load the contents of the page
+  function loadPage() {
     Promise.resolve()
     .then(() => {
-      return $.post('loadUser');
+      return $.post('getUserProfile', {id: "593c3afa734d1d517c18c0fc"});
+    })
+    .then((post) => {
+      setUserProfile(post);
+    })
+    .then(() => {
+      return $.post('getTopProfiles');
     })
     .then((posts) => {
-      console.log(posts);
-      $('#displayName').html(posts[0].displayName);
-      document.getElementById("profileImg").src = "img/profile_img/" + posts[0].imageProfile;
-      $('#postCount').html(posts[0].postsCount);
-      $('#followerCount').html(posts[0].followersCount);
-      $('#followingCount').html(posts[0].followingCount);
-    });
-    
-// 20170613 by Winson
-// Load user information and posts for main page
-    loadUser(User1Id,1);
-    loadUserPost(User1Id,1)
-    loadUser(User2Id,2);
-    loadUserPost(User2Id,5)
-  }
-  
-
-// 20170613 by Winson
-// Load user information for main page
-  function loadUser(userID, loadIndex) {
-    Promise.resolve()
-    .then(() => {
-      return $.post('loadUserPost', {id : userID});
-    })
-    .then((users) => {
-      $('#UserName' + loadIndex).html(users[0].userName);
-      $('#FullName' + loadIndex).html(users[0].firstName + ' ' + users[0].lastName);
-      document.getElementById("postProfileImage" + loadIndex).src = "img/profile_img/" + users[0].imageProfile;
+      setTopProfiles(posts);
     });
   }
   
-// 20170613 by Winson
-// Load user post information for main page
-    function loadUserPost(userID, loadIndex) {
+  // Function to set the user profile
+  function setUserProfile(post){
+    var userProfile = post;
+    $('#displayName').html(userProfile.displayName);
+    $('#profileImage').attr("src","img/profile_img/" + userProfile.imageProfile);
+    $('#postCount').html(userProfile.postsCount);
+    $('#followerCount').html(userProfile.followersCount);
+    $('#followingCount').html(userProfile.followingCount);
+  }
+  
+  // Function to set the top profiles
+  function setTopProfiles(posts){
+    var topProfiles = posts;
+    for (var i = 0; i < topProfiles.length; i++) {
+      addGallery(topProfiles, i);
+      setGalleryContent(topProfiles, i);
+    } 
+  }
+  
+  // Function to add Gallery html to the Gallery Container
+  function addGallery(topProfiles, i){
+    $('#galleryContainer').append('<div class="gallery">\
+      <div class="gallery_upper">\
+        <img src="" height="50px" class="profile" id="topProfileImage' + i + '">\
+        <h4>\
+        <span id="topProfileUsername' + i + '"></span> \
+          <img alt="verified" src="img/icons/icon4.png">\
+          <p id="topProfileFullName' + i + '"></p>\
+        </h4>\
+        <button>Follow</button>\
+      </div>\
+      <div id="postContainer' + topProfiles[i]._id + '">\
+      </div>\
+    </div>');
+    addPosts(topProfiles, i);
+  }
+
+  // Function to add Posts html to Post Container
+  function addPosts(topProfiles, i){
+    for (var j = 0; j < 4; j++) {
+      $('#postContainer' + topProfiles[i]._id).append('<div class="thumbnail">\
+          <a href="#">\
+            <img src="" class="cards" id="thumbnail' + topProfiles[i]._id + j +'"/>\
+          </a>\
+          <h4>\
+            <img src="img/icons/icon2.png" height="15px" alt="Likes">\
+            <i id="popularity' + topProfiles[i]._id + j +'"></i>\
+          </h4>\
+          <p class="text_column" id="status' + topProfiles[i]._id + j +'"></p>\
+          <p class="tag" id="hastag' + topProfiles[i]._id + j +'"></p>\
+        </div>');
+      setPostsContent(topProfiles[i]._id, j);
+    }
+  }
+
+  // Function to set content of Upper Gallery
+  function setGalleryContent(topProfiles, i){
+    $('#topProfileImage' + i).attr("src","img/profile_img/" + topProfiles[i].imageProfile);
+    $('#topProfileUsername' + i).html(topProfiles[i].displayName);
+    $('#topProfileFullName' + i).html(topProfiles[i].firstName + ' ' + topProfiles[i].lastName);
+  }
+
+  // Function to set content of Posts
+  function setPostsContent(id, j){
     Promise.resolve()
     .then(() => {
-      return $.post('loadPost', {id : userID});
+      return $.post('getPostsContent', {id: id});
     })
     .then((posts) => {
-      for (var i = 0; i < 4; i++) 
-      {
-        document.getElementById("postImage" + (i+loadIndex)).src = "img/instagram_img/" + posts[i].image;
-        $('#postComment'+ (i+loadIndex)).html(posts[i].comment);
-        $('#postHashTag' + (i+loadIndex)).html(posts[i].hashTag);
-      }
+      var postsContent = posts;
+      $('#thumbnail' + id + j).attr("src","img/instagram_img/" + postsContent[j].image);
+      $('#popularity' + id + j).html(postsContent[j].likeCount);
+      $('#status' + id + j).html(postsContent[j].comment);
+      $('#hastag' + id + j).html(postsContent[j].hashTag);
     });
   }
 </script>
 
 </head>
-<body onload="loadIntro();">
-<!-- Main Container -->
-<div class="container"> 
-  <!-- Header Section-->
-  <header class="header">
-    <div class="header_left">
-    	<img src="img/logo/logo_img1.png" alt="Company logo">
-    	<img src="img/logo/logo_img2.png" width="1px" alt="">
-    	<img src="img/logo/logo_img3.png" alt="Brand">
-    </div>
-    <div class="header_center">
-    	<input placeholder="Search" value="" type="text" alt="Search box">
-    </div>
-    <div class="header_right">
-    	<img src="img/icons/icon1.png" alt="History">
-    	<img src="img/icons/icon2.png" alt="Favorite photos">
-    	<img src="img/icons/icon3.png" alt="User profile">
-    </div>
-  </header>
-  <!-- Intro Section -->
-  <section class="intro" >
-    <div class="intro_column">
-      <h3 id="displayName"></h3>
-      <img src="" class="profile" alt="Profile image" id="profileImg"> 
-    </div>
-    <div class="intro_column">
-      <p><strong>Welcome to Instagram!</strong></p>
-      <p>Follow accounts to see photos in your feed.</p>
-      <p><strong><i id="postCount"></i></strong> posts<span class="summary"><strong><i id="followerCount"></i></strong> followers</span> <span class="summary"><strong><i id="followingCount"></i></strong> following</span></p>
-    </div>
-  </section>
-  <!-- Gallery Section -->
-  <div class="gallery">
-   <div class="gallery_upper">
-      <img src="" id="postProfileImage1" height="50px" class="profile" >
-      <h4>
-      <span id="UserName1"></span> 
-        <img alt="verified" src="img/icons/icon4.png">
-        <p id="FullName1"></p>
-      </h4>
-      <button>Follow</button>
-   </div>
-    <div class="thumbnail"> 
-    <a href="#">
-      <img src="" class="cards" id="postImage1"/>
-    </a>
-      <p class="text_column" id="postComment1"></p>
-      <p class="tag" id="postHashTag1"></p>
-    </div>
-    <div class="thumbnail"> 
-    <a href="#">
-      <img src="" class="cards" id="postImage2"/>
-    </a>
-      <p class="text_column" id="postComment2"></p>
-      <p class="tag" id = "postHashTag2"></p>
-    </div>
-    <div class="thumbnail">
-       <a href="#">
-         <img src="" class="cards" id="postImage3"/>
-        </a>
-      <p class="text_column" id="postComment3"></p>
-      <p class="tag" id="postHashTag3"></p>
-    </div>
-    <div class="thumbnail">
-       <a href="#">
-         <img src="" class="cards" id="postImage4"/>
-         </a>
-      <p class="text_column" id="postComment4">
-      </p>
-      <p class="tag" id="postHashTag4"></p>
-    </div>
+<body onload="loadPage();">
+  
+  <!-- Main Container -->
+  <div class="container"> 
+  
+    <!-- Header Section-->
+    <header class="header">
+      <div class="header_left">
+      	<img src="img/logo/logo_img1.png" alt="Company logo">
+      	<img src="img/logo/logo_img2.png" width="1px" alt="">
+      	<img src="img/logo/logo_img3.png" alt="Brand">
+      </div>
+      <div class="header_center">
+      	<input placeholder="Search" value="" type="text" alt="Search box">
+      </div>
+      <div class="header_right">
+      	<img src="img/icons/icon1.png" alt="History">
+      	<img src="img/icons/icon2.png" alt="Favorite photos">
+      	<img src="img/icons/icon3.png" alt="User profile">
+      </div>
+    </header>
+    
+    <!-- Intro Section -->
+    <section class="intro" >
+      <div class="intro_column">
+        <h3 id="displayName"></h3>
+        <img src="" class="profile" alt="Profile image" id="profileImage"> 
+      </div>
+      <div class="intro_column">
+        <p><strong>Welcome to Instagram!</strong></p>
+        <p>Follow accounts to see photos in your feed.</p>
+        <p><strong><i id="postCount"></i></strong> posts<span class="summary"><strong><i id="followerCount"></i></strong> followers</span> <span class="summary"><strong><i id="followingCount"></i></strong> following</span></p>
+      </div>
+    </section>
+    
+    <!-- Gallery Section -->
+    <div id="galleryContainer"></div>
+    
+    <!-- Footer Section -->
+    <footer id="contact">
+      <p class="footer_header" id="f1">About</p>
+      <p class="footer_header" id="f2">Privacy</p>
+      <p class="footer_header" id="f3">Term</p>
+      <p class="footer_header" id="f4">Support</p>
+      <div class="button">CONTACT US</div>
+    </footer>
+    
+    <!-- Copyrights Section -->
+    <div class="copyright">&copy;2017 - <strong>INSTAGRAM CLONE CREATED BY TRAN NGOC PHUONG DANG, CHI HIEU TRAN AND DUNCAN ROBERTSON</strong></div>
   </div>
-  <div class="gallery">
-   <div class="gallery_upper">
-      <img src="" id="postProfileImage2"  height="50px" class="profile" >
-      <h4> 
-      <span id="UserName2"> </span>
-        <img alt="verified" src="img/icons/icon4.png">
-      <p id="FullName2"></p>
-      </h4>
-      <button>Follow</button>
-   </div>
-    <div class="thumbnail"> 
-    <a href="#">
-      <img src="" class="cards" id="postImage5"/>
-    </a>
-      <p class="text_column" id="postComment5"></p>
-      <p class="tag" id="postHashTag5">#gogrizzlies</p>
-    </div>
-    <div class="thumbnail"> 
-    <a href="#">
-      <img src=""  class="cards" id ="postImage6"/>
-    </a>
-      <p class="text_column" id="postComment6"></p>
-      <p class="tag" id="postHashTag6"></p>
-    </div>
-    <div class="thumbnail"> 
-    <a href="#">
-      <img src="" id="postImage7" class="cards"/>
-      </a>
-      <p class="text_column" id="postComment7"></p>
-      <p class="tag" id="postHashTag7"></p>
-    </div>
-    <div class="thumbnail"> 
-    <a href="#">
-      <img src="" id="postImage8" class="cards"  />
-    </a>
-    <p class="text_column" id="postComment8"></p>
-    <p class="tag" id="postHashTag8"></p>
-    </div>
-  </div>
-  <!-- Footer Section -->
-  <footer id="contact">
-    <p class="footer_header" id="f1">About</p>
-    <p class="footer_header" id="f2">Privacy</p>
-    <p class="footer_header" id="f3">Term</p>
-    <p class="footer_header" id="f4">Support</p>
-    <div class="button">CONTACT US</div>
-  </footer>
-  <!-- Copyrights Section -->
-  <div class="copyright">&copy;2017 - <strong>INSTAGRAM CLONE CREATED BY TRAN NGOC PHUONG DANG, CHI HIEU TRAN AND DUNCAN ROBERTSON</strong></div>
-</div>
-<!-- Main Container Ends -->
+  
+  <!-- Main Container Ends -->
 </body>
 </html>

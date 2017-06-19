@@ -56,7 +56,6 @@ router.post('/getPostsContent', function(req, res){
    Post.find({ "userId" : req.body.id}).limit(4)
   .then((postsContent) => {
     res.json(postsContent);
-    console.log(postsContent);
   });
 });
 

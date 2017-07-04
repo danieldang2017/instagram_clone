@@ -1,8 +1,10 @@
 /*#NodeJS server
-  A simple server to serve the Instagram clone website
+ *A simple server to serve the Instagram clone website
+ *
 --------------------------------- Server configuration ----------------------------------
-  1. Adds external modules from node_modules
-*/
+ *
+ *1. Adds external modules from node_modules
+ */
 var http = require('http');
 var path = require('path');
 var express = require('express');
@@ -31,11 +33,17 @@ router.use(bodyParser.urlencoded({
 
 /*
 -------------------------------- Processes requests from client ------------------------------
+ *
+ *I. Root access redirection
+ */
+router.get('/', function(req, res){
+  console.log('client requests root');
+  res.sendfile(path.join(__dirname, 'client/views','loginAndRegistration.html'));
+});
 
-  I. Index.html
-  
-    1. Load user profile
-*/
+/* I. Index.html
+ *    1. Load user profile
+ */
 router.post('/getUserProfile', (req, res) => {
   User.findById(req.body.id)
   .then((user) => {
@@ -59,9 +67,17 @@ router.post('/getPostsContent', function(req, res){
   });
 });
 
+/* II. loginAndRegistration.html
+ *    1. 
+ */
+ 
+/* III. ForgotPassword.html
+ *    1. 
+ */
+
 /*---------------------------------------------------------------------------------------
-  Starts server
-*/
+ *Starts server
+ */
 server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
   var addr = server.address();
   console.log("NodeJS server listening at", addr.address + ":" + addr.port);

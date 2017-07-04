@@ -7,8 +7,9 @@
   "author": "Tran Ngoc Phuong Dang <tdang3618@conestogac.on.ca>; Chi Hieu Tran <htran2620@conestogac.on.ca>; Duncan Robertson <drobertson4833@conestogac.on.ca> ",
   "dependencies": {
     "body-parser": "^1.17.2",
-    "express": "~3.2.4",
-    "mongodb": "^2.2.27",
-    "mongoose": "^4.10.5"
+    "express": "^3.2.6",
+    "mongodb": "^2.2.29",
+    "mongoose": "^4.11.1",
+    "passport": "^0.3.2"
   }
 }

@@ -34,7 +34,7 @@ module.exports.isAuthenticated = function (req, res, next) {
     } else {
 	    console.log('we do not');
         // if the user is not authenticated then redirect him to the login page
-        res.redirect('/');
+        res.redirect('/login');
     }
 }
 

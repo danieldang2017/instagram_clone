@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login and Registration Form with HTML5 and CSS3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" type="text/css" href="../css/login.css" />
+    <link rel="stylesheet" type="text/css" href="../css/login2.css" />
+    <link rel="stylesheet" type="text/css" href="../css/loginAnimation.css" />
+    
+       <!-- Adds JQuery -->
+    <script src="../js/jquery-3.2.1.min.js"></script>
+ <script>
+     function loadPage(){
+         var error = location.search.split('e=')[1]
+         $('#error').html(error);
+     }
+ </script>
+    
+  </head>
+  <body onload="loadPage();">
+    <div class="container">
+      <header>
+        <h1>Instagram</h1>
+				<nav class="codrops-demos">
+				  <span>Sign up to see photos and videos from your friends.</span>
+				</nav>
+      </header>
+      <section>				
+        <div id="container_demo" >
+          <a class="hiddenanchor" id="toregister"></a>
+          <a class="hiddenanchor" id="tologin"></a>
+          <div id="wrapper">
+            <div id="login" class="animate form">
+              <form>
+             
+                <h1>Error</h1> 
+                <p> 
+                  <label id="error" ></label>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>  
+      </section>
+    </div>
+  </body>
+</html>

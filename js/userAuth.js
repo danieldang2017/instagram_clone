@@ -31,7 +31,6 @@ module.exports.isAuthenticated = function (req, res, next) {
 	// if user is authenticated in the session 
 	if (req.isAuthenticated()){
 	    console.log('we do');
-	    console.log('check if user is in database');
         //allow them to proceed
         next();
     } else {

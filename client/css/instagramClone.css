@@ -264,5 +264,6 @@ body {
 	border-top-width: 2px;
 }
 
-
-
+#profileImage {
+	width: 50%;
+}

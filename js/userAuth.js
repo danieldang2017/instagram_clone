@@ -12,7 +12,7 @@ module.exports.init = function(passport){
 
     passport.deserializeUser(function(id, callback) {
         User.findById(id, function(err, user) {
-            console.log('deserializing user: ' + user.username);
+            console.log('deserializing user: ' + user.userName);
             callback(err, user);
         });
     });
@@ -20,8 +20,8 @@ module.exports.init = function(passport){
     //set up the login handler
     passport.use('login', new LocalStrategy(handleLoginAttempt));
     //set up the signup handler
-	passport.use('signup', new LocalStrategy(handleSignupAttempt));
-}
+	passport.use('signup', new LocalStrategy({passReqToCallback: true}, handleSignupAttempt));
+};
 
 //encapsulate validating whether this session has an authenticated user
 module.exports.isAuthenticated = function (req, res, next) {
@@ -36,7 +36,7 @@ module.exports.isAuthenticated = function (req, res, next) {
         // if the user is not authenticated then redirect him to the login page
         res.redirect('/');
     }
-}
+};
 
 //passport will call this function when someone attempts to log in
 function handleLoginAttempt(email, password, cb){
@@ -65,6 +65,40 @@ function handleLoginAttempt(email, password, cb){
 }
 
 //passport will call this function when someone attempts to join
+function handleSignupAttempt(req, username, password, done) {
+    User.findOne({'userName': username})
+    .then( (user) => {
+        if(!user) {
+            user = new User({
+                userName: username,
+                password: hash.createHash(password),
+                email: req.body.email,
+                imageProfile: 'default.png',
+                postsCount: 0,
+                followersCount: 0,
+                followingCount: 0
+            });
+            
+            user.save()
+            .then( (result) => {
+                done(null, result);
+            })
+            .catch( (err) => {
+                console.log('userAuth: error creating user: ' + err);
+                done(err, false);
+                
+            });
+        } else {
+            done(null, false);
+        }
+    })
+    .catch( (err) => {
+        console.log('userAuth: handleSignupAttempt: exception: ' + err);
+        done(err);
+    });
+}
+
+/*
 function handleSignupAttempt(email, password, cb){
     //don't log user's passwords in plain text to the console in production
     console.log('userAuth: handleSignupAttempt: email: ' + email + ' password: ' + password);
@@ -89,7 +123,7 @@ function handleSignupAttempt(email, password, cb){
             .then(function(user){
                 //execute the callback with appropriate parameters
                 cb(null, user);
-            })
+            });
         } else {
             cb(null, false);
         }
@@ -100,4 +134,4 @@ function handleSignupAttempt(email, password, cb){
         cb(err);
     });
 }
-
+*/

@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="../css/login.css" />
     <link rel="stylesheet" type="text/css" href="../css/login2.css" />
     <link rel="stylesheet" type="text/css" href="../css/loginAnimation.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
     
        <!-- Adds JQuery -->
     <script src="../js/jquery-3.2.1.min.js"></script>
@@ -38,6 +39,94 @@
                     $('#error').html('Please provide both username and password');
                 }
             }
+            
+            $(document).ready( ()=> {
+              $('#register').submit( ()=> {
+                var usernameField = $('#usernamesignup');
+                var emailField = $('#emailsignup');
+                var passwordField = $('#passwordsignup');
+                var passwordConfirmField = $('#passwordsignup_confirm');
+                
+                var usernameForm = $('#usernameForm');
+                var emailForm = $('#emailForm');
+                var passwordForm = $('#passwordForm');
+                
+                usernameForm.removeClass('has-error');
+                emailForm.removeClass('has-error');
+                passwordForm.removeClass('has-error');
+
+                $.post('/register', {
+                  username: usernameField.val(),
+                  email: emailField.val(),
+                  password: passwordField.val(),
+                  passwordConfirm: passwordConfirmField.val()
+                })
+                .done( (data) => {
+                  var uErr = $('#usernameErr');
+                  var eErr = $('#emailErr');
+                  var pErr = $('#passwordErr');
+                  var gErr = $('#generalErr');
+                  
+                  uErr.html('');
+                  eErr.html('');
+                  pErr.html('');
+                  gErr.html('');
+                  
+                  if(data.success) {
+                    $('#registerSuccess').html('Account created successfully!<br>');
+                    $.post('/signin', {
+                      username: emailField.val(),
+                      password: passwordField.val()
+                    })
+                    .done( (auth) => {
+                      if(auth.isValid) {
+                        $('#registerSuccess').append('Proceeding to site')
+                        setTimeout(window.location.replace('index'), 5000);
+                      }
+                    })
+                  } else {
+                    var usernameFailure = '';
+                    var emailFailure = '';
+                    var passwordFailure = '';
+                    var generalFailure = '';
+                    
+                    data.failures.forEach((failure) => {
+                      switch(failure.field) {
+                        case 'username':
+                          usernameFailure += failure.reason + '<br>';
+                          break;
+                        case 'email':
+                          emailFailure += failure.reason + '<br>';
+                          break;
+                        case 'password':
+                          passwordFailure += failure.reason + '<br>';
+                          break;
+                        default:
+                          generalFailure += failure.reason + '<br>';
+                      }
+                    });
+                    
+                    if(usernameFailure) {
+                      usernameForm.addClass('has-error');
+                      uErr.html(usernameFailure);
+                    }
+                    if(emailFailure) {
+                      emailForm.addClass('has-error');
+                      eErr.html(emailFailure);
+                    }
+                    if(passwordFailure) {
+                      passwordForm.addClass('has-error');
+                      pErr.html(passwordFailure);
+                    }
+                    
+                    gErr.html(generalFailure);
+                    
+                  }
+                  $('#register input[type="submit"]').blur();
+                });
+              });
+            });
+            
 
         </script>
     
@@ -87,27 +176,34 @@
               </form>
             </div>
             
-            
-            
             <div id="register" class="animate form">
-              <form  action="/register" method="POST" autocomplete="on"> 
-                <h1> Sign up </h1> 
-                <p> 
-                  <label for="usernamesignup" class="uname" data-icon="u">Your username</label>
-                  <input id="usernamesignup" name="usernamesignup" required="required" type="text" placeholder="Username" />
-                </p>
-                <p> 
-                  <label for="emailsignup" class="youmail" data-icon="e" > Your email</label>
-                  <input id="emailsignup" name="emailsignup" required="required" type="email" placeholder="Email"/> 
-                </p>
-                <p> 
-                  <label for="passwordsignup" class="youpasswd" data-icon="p">Your password </label>
+              <form  onSubmit="return false;" autocomplete="on"> 
+                <h1> Sign up </h1>
+                <div class="has-error">
+                  <span class="help-block" id="generalErr"></span>
+                </div>
+                <div class="has-success">
+                  <span class="help-block" id="registerSuccess"></span>
+                </div>
+                <div class="form-group" id="usernameForm">
+                  <label class="control-label uname" for="usernamesignup" data-icon="u">Your username</label>
+                  <input type="text" id="usernamesignup" name="usernamesignup" required="required" placeholder="Username"/>
+                  <span class="help-block" id="usernameErr"></span>
+                </div>
+                <div class="form-group" id="emailForm"> 
+                  <label for="emailsignup" class="control-label youmail" data-icon="e" > Your email</label>
+                  <input id="emailsignup" name="emailsignup" required="required" type="email" placeholder="E-mail"/>
+                  <span class="help-block" id="emailErr"></span>
+                </div>
+                <div class="form-group" id="passwordForm"> 
+                  <label for="passwordsignup" class="control-label youpasswd" data-icon="p">Your password </label>
                   <input id="passwordsignup" name="passwordsignup" required="required" type="password" placeholder="Password"/>
-                </p>
-                <p> 
+                  <span class="help-block" id="passwordErr"></span>
+                </div>
+                <div>
                   <label for="passwordsignup_confirm" class="youpasswd" data-icon="p">Please confirm your password </label>
                   <input id="passwordsignup_confirm" name="passwordsignup_confirm" required="required" type="password" placeholder="Confirm password"/>
-                </p>
+                </div>
                 <p class="signin button"> 
 								<input type="submit" value="Sign up"/> 
     						</p>

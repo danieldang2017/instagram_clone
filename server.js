@@ -67,19 +67,10 @@ router.use(session({
 router.use(passport.initialize());
 router.use(passport.session());
 userAuth.init(passport);
+
 /*
 -------------------------------- Processes requests from client ------------------------------
 */
- 
-router.post('/register', registration.validate, (req, res) => {
-  var response = {};
-  response.success = req.valid
-  
-  if(!req.valid) {
-    response.failures = req.failures;
-  }
-  res.json(response);
-});
 
 /*
  *I. Root access redirection
@@ -104,26 +95,16 @@ router.get('/index',userAuth.isAuthenticated, function(req, res){
 
 /* I. Index.html
  *    1. Load user profile
-
-
-router.post('/getUserProfile', (req, res) => {
-  User.findById(req.body.id)
-  .then((user) => {
-    res.json(user);
-  });
-});
 */
 
 router.post('/getUserProfile', (req, res) => {
-  var currentUser = req.session.passport.user
-  console.log(currentUser)
+  var currentUser = req.session.passport.user;
+  console.log(currentUser);
   User.findById(currentUser)
   .then((user) => {
     res.json(user);
   });
 });
-
-
 
 
 //  2. Load top profiles
@@ -175,6 +156,34 @@ router.post('/signin', function(req, res, next) {
     }
   })(req, res, next);
 });
+
+
+router.post('/register', registration.validate, (req, res, next) => {
+  var response = {};
+  
+  if(!req.valid) {
+    response.success = false;
+    response.failures = req.failures;
+    res.json(response);
+  } else {
+    passport.authenticate('signup', (err, user) => {
+      if(!err && user) {
+        console.log('User ' + user.userName + ' created');
+        console.log(user);
+        response.success = true;
+        
+      } else {
+        console.log(user.userName + ' could not be created');
+        response.success = false;
+        response.failures.push({field: 'none', reason: 'Registration failed, try again later'});
+      }
+      
+
+      res.json(response);
+    })(req, res, next);
+  }
+});
+
 
  
 /* III. ForgotPassword.html

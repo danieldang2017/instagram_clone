@@ -1,19 +1,16 @@
 // Provides all the data validation functions required by the server
+const User = require('../models/User.js');
+const usernameField = 'userName';
+const emailField = 'email';
 
-module.exports.userSchema;
-module.exports.usernameField = 'userName';
-
-module.exports.userExists = (username, callback) => {
-    var User = module.exports.userSchema;
-    var usernameField = module.exports.usernameField;
-
+module.exports.userExists = (input, callback) => {
     if(!User) {
-        var error = new Error('validate.js: userSchema not defined. Set the value of userSchema to an appropriate mongoose model');
+        var error = new Error('validate.js: User mongoose model not set');
     }
     
     if(!error) {
         var query_json = {};
-        query_json[usernameField] = username;
+        query_json[usernameField] = input;
         var query = User.findOne(query_json)
         .then((user) => {
             if(user) {
@@ -24,7 +21,7 @@ module.exports.userExists = (username, callback) => {
             
         })
         .catch((err) => {
-            console.log('An error occurred checking for the user\n' + err);
+            console.log('An error occurred checking for username\n' + err);
             return false;
         });
     }
@@ -46,7 +43,49 @@ module.exports.userExists = (username, callback) => {
             return query;
         }
     }
-}
+};
+
+module.exports.emailExists = (input, callback) => {
+    if(!User) {
+        var error = new Error('validate.js: User mongoose model not set');
+    }
+    
+    if(!error) {
+        var query_json = {};
+        query_json[emailField] = input;
+        var query = User.findOne(query_json)
+        .then((user) => {
+            if(user) {
+                return true;
+            } else {
+                return false;
+            }
+            
+        })
+        .catch((err) => {
+            console.log('An error occurred checking for email address\n' + err);
+            return false;
+        });
+    }
+    
+    if(typeof(callback) == 'function') {
+        if(error) {
+            callback(error);
+        } else {
+            query.then((result) => callback(null, result))
+            .catch((err) => {
+                callback(err);
+            });
+        }
+        
+    } else {
+        if(error){
+            return Promise.reject(error);
+        } else {
+            return query;
+        }
+    }
+};
 
 
 module.exports.username = (input, User) => {

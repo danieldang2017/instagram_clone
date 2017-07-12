@@ -28,7 +28,7 @@ Duncan Robertson. Student number: 8074833 -->
   
     <!-- JavaScript to load the contents of the page -->
     <script>
-    
+    /*global $*/
       // Function to load the contents of the page
       function loadPage() {
         Promise.resolve()
@@ -133,6 +133,7 @@ Duncan Robertson. Student number: 8074833 -->
       <!-- Header Section-->
       <header id="header" class="header"></header>
       <script> 
+      /*global $*/
       $(function(){
         $("#header").load("../templates/header.html"); 
       });
@@ -156,7 +157,8 @@ Duncan Robertson. Student number: 8074833 -->
       
       <!-- Footer Section -->
       <footer id="footer"></footer>
-      <script> 
+      <script>
+      /*global $*/
       $(function(){
         $("#footer").load("../templates/footer.html"); 
       });
@@ -166,6 +168,7 @@ Duncan Robertson. Student number: 8074833 -->
       <div class="copyright" id="copyright"></div>
       <script> 
       $(function(){
+        /*global $*/
         $("#copyright").load("../templates/copyright.html"); 
       });
       </script> 

@@ -12,7 +12,9 @@ module.exports.init = function(passport){
 
     passport.deserializeUser(function(id, callback) {
         User.findById(id, function(err, user) {
-            console.log('deserializing user: ' + user.userName);
+            if(user) {
+                console.log('deserializing user: ' + user.userName);
+            }
             callback(err, user);
         });
     });
@@ -29,6 +31,7 @@ module.exports.isAuthenticated = function (req, res, next) {
 	// if user is authenticated in the session 
 	if (req.isAuthenticated()){
 	    console.log('we do');
+	    console.log('check if user is in database');
         //allow them to proceed
         next();
     } else {

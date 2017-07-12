@@ -80,9 +80,9 @@ userAuth.init(passport);
  *I. Root access redirection
 */
  
-router.get('/', function(req, res){
+router.get('/', userAuth.isAuthenticated, function(req, res){
   console.log('client requests root');
-  res.sendfile(path.join(__dirname, 'client/views','loginAndRegistration.html'));
+  res.sendfile(path.join(__dirname, 'client/views','index.html'));
 });
 
 router.get('/login', function(req, res){

@@ -194,16 +194,19 @@ router.post('/passwordreset', (req, res) => {
 
 router.get('/verifypassword', function(req, res){
     var password;
+    //convert to object id
+    var id = req.query.id;
     Promise.resolve()
     .then(function(){
-    return PasswordReset.findOne({id: req.body.id});
+      return PasswordReset.findOne({_id: id});
     })
     .then(function(pr){
+        console.log("Pr");
+        console.log(pr);
       if (pr){
-        console.log(pr)
+      
         if (pr.expires > new Date()){
-          console.log("Pr")
-          console.log(pr)
+      
           password = pr.password;
           //see if there's a user with this email
           return User.findOne({_id : pr.userId});
@@ -239,7 +242,7 @@ router.get('/verifypassword', function(req, res){
       }
       else
       {
-        res.redirect('/error?e=' + encodeURIComponent('Reset Failed'));
+        res.redirect('/error?e= Reset Failed');
         console.log("Reset Failed")
       }
     })

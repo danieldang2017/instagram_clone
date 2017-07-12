@@ -1,3 +1,129 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login and Registration Form with HTML5 and CSS3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" type="text/css" href="../css/login.css" />
+    <link rel="stylesheet" type="text/css" href="../css/login2.css" />
+    <link rel="stylesheet" type="text/css" href="../css/loginAnimation.css" />
+    
+       <!-- Adds JQuery -->
+    <script src="../js/jquery-3.2.1.min.js"></script>
+ 
+         <script>
+            /*global $*/
+            function handleSigninAttempt(){
+                var email = $('#email').val();
+                var password = $('#password').val();
+                
+                if (email.length > 0 && password.length > 0){
+                    Promise.resolve()
+                    .then(function(){
+                        return $.post('signin', 'username=' + email + '&password=' + password);
+                    })
+                .then(function(auth){
+                        if (auth.isValid){
+                            $('#error').text = 'Login Successful';
+                            window.location.replace('index');
+                        } else {
+                            $('#error').html(auth.message);
+                            $('#email').html('');
+                            $('#password').html('');
+                        }
+                    })
+                .catch(function(err){
+                        console.log(err);
+                    })
+                } else {
+                    $('#error').html('Invalid Email or Password');
+                }
+            }
+
+        </script>
+    
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Instagram</h1>
+				<nav class="codrops-demos">
+				  <span>Sign up to see photos and videos from your friends.</span>
+				</nav>
+      </header>
+      <section>				
+        <div id="container_demo" >
+          <a class="hiddenanchor" id="toregister"></a>
+          <a class="hiddenanchor" id="tologin"></a>
+          <div id="wrapper">
+            <div id="login" class="animate form">
+              <form> 
+                <p id="error"></p>
+                <h1>Log in</h1> 
+                <p> 
+                  <label for="email" class="uname" data-icon="u" > Your email</label>
+                  <input name="email" required="required" type="text" placeholder="Email" id="email"/>
+                </p>
+                <p> 
+                  <label for="password" class="youpasswd" data-icon="p"> Your password </label>
+                  <input name="password" required="required" type="password" placeholder="Password" id="password"/> 
+                </p>
+                <p class="keeplogin"> 
+  							  <input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" /> 
+  							  <label for="loginkeeping">Keep me logged in</label>
+  							  <span style="padding-right: 20px"><a href="/forgotPassword.html">Forgot password?</a></span>
+  						  </p>
+  						  
+  						  
+                <p class="login button"> 
+                  <input type="button" value="Login" id="btnLogin" onclick="handleSigninAttempt()"/> 
+  						  </p>
+  						  
+  						  
+  						  
+                <p class="change_link">
+  							  Don't have an account? 
+  							  <a href="#toregister" class="to_register">Join us</a>
+  						  </p>
+              </form>
+            </div>
+            
+            
+            
+            <div id="register" class="animate form">
+              <form  action="/" autocomplete="on"> 
+                <h1> Sign up </h1> 
+                <p> 
+                  <label for="usernamesignup" class="uname" data-icon="u">Your username</label>
+                  <input id="usernamesignup" name="usernamesignup" required="required" type="text" placeholder="Username" />
+                </p>
+                <p> 
+                  <label for="emailsignup" class="youmail" data-icon="e" > Your email</label>
+                  <input id="emailsignup" name="emailsignup" required="required" type="email" placeholder="Email"/> 
+                </p>
+                <p> 
+                  <label for="passwordsignup" class="youpasswd" data-icon="p">Your password </label>
+                  <input id="passwordsignup" name="passwordsignup" required="required" type="password" placeholder="Password"/>
+                </p>
+                <p> 
+                  <label for="passwordsignup_confirm" class="youpasswd" data-icon="p">Please confirm your password </label>
+                  <input id="passwordsignup_confirm" name="passwordsignup_confirm" required="required" type="password" placeholder="Confirm password"/>
+                </p>
+                <p class="signin button"> 
+								<input type="submit" value="Sign up"/> 
+    						</p>
+                <p class="change_link">  
+    							Already have an account ?
+    							<a href="#tologin" class="to_register"> Log in </a>
+    						</p>
+              </form>
+            </div>
+          </div>
+        </div>  
+      </section>
+    </div>
+  </body>
+=======
 <!DOCTYPE html>
   <head>
     <meta charset="UTF-8" />
@@ -36,10 +162,10 @@
                         console.log(err);
                     })
                 } else {
-                    $('#error').html('Invalid Email or Password');
+                    $('#error').html('Please provide both username and password');
                 }
             }
-
+            
             $(document).ready( ()=> {
               $('#register').submit( ()=> {
                 var usernameField = $('#usernamesignup');
@@ -126,6 +252,8 @@
                 });
               });
             });
+            
+
         </script>
     
   </head>
@@ -148,11 +276,11 @@
                 <h1>Log in</h1> 
                 <p> 
                   <label for="email" class="uname" data-icon="u" > Your email</label>
-                  <input name="email" required="required" type="text" placeholder="Email" id="email"/>
+                  <input name="email" required="required" type="text" placeholder="Email" value="a@gmail.com" id="email"/>
                 </p>
                 <p> 
                   <label for="password" class="youpasswd" data-icon="p"> Your password </label>
-                  <input name="password" required="required" type="password" placeholder="Password" id="password"/> 
+                  <input name="password" required="required" type="password" placeholder="Password" value="12345" id="password"/> 
                 </p>
                 <p class="keeplogin"> 
   							  <input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" /> 
@@ -173,8 +301,6 @@
   						  </p>
               </form>
             </div>
-            
-            
             
             <div id="register" class="animate form">
               <form  onSubmit="return false;" autocomplete="on"> 
@@ -218,4 +344,5 @@
       </section>
     </div>
   </body>
+>>>>>>> dev-duncan
 </html>

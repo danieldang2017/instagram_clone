@@ -163,6 +163,8 @@ router.post('/signin', function(req, res, next) {
   })(req, res, next);
 });
 
+
+<<<<<<< HEAD
 router.post('/passwordreset', (req, res) => {
     Promise.resolve()
     .then(function(){
@@ -245,6 +247,7 @@ router.get('/verifypassword', function(req, res){
     })
 });
 
+=======
 router.post('/register', registration.validate, (req, res, next) => {
   var response = {};
   
@@ -270,6 +273,9 @@ router.post('/register', registration.validate, (req, res, next) => {
     })(req, res, next);
   }
 });
+
+
+>>>>>>> dev-duncan
  
 /* III. ForgotPassword.html
  *    1. 

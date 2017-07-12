@@ -36,10 +36,10 @@
                         console.log(err);
                     })
                 } else {
-                    $('#error').html('Invalid Email or Password');
+                    $('#error').html('Please provide both username and password');
                 }
             }
-
+            
             $(document).ready( ()=> {
               $('#register').submit( ()=> {
                 var usernameField = $('#usernamesignup');
@@ -126,6 +126,8 @@
                 });
               });
             });
+            
+
         </script>
     
   </head>
@@ -148,11 +150,11 @@
                 <h1>Log in</h1> 
                 <p> 
                   <label for="email" class="uname" data-icon="u" > Your email</label>
-                  <input name="email" required="required" type="text" placeholder="Email" id="email"/>
+                  <input name="email" required="required" type="text" placeholder="Email" value="a@gmail.com" id="email"/>
                 </p>
                 <p> 
                   <label for="password" class="youpasswd" data-icon="p"> Your password </label>
-                  <input name="password" required="required" type="password" placeholder="Password" id="password"/> 
+                  <input name="password" required="required" type="password" placeholder="Password" value="12345" id="password"/> 
                 </p>
                 <p class="keeplogin"> 
   							  <input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" /> 
@@ -173,8 +175,6 @@
   						  </p>
               </form>
             </div>
-            
-            
             
             <div id="register" class="animate form">
               <form  onSubmit="return false;" autocomplete="on"> 

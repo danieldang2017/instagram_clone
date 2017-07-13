@@ -180,7 +180,8 @@ router.post('/passwordreset', (req, res) => {
         pr.save()
         .then(function(pr){
           if (pr){
-            email.send(req.body.email, 'password reset', 'https://webinstagram-winsontran.c9users.io/verifypassword?id=' + pr.id);
+            var url = req.protocol + '://' + req.headers.host;
+            email.send(req.body.email, 'password reset', url + '/verifypassword?id=' + pr.id);
             res.json({isValid: true, message: 'Your Account has been reset! Please check your email to confirm'});
           }
         });

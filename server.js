@@ -5,7 +5,8 @@
  *
  *1. Adds external modules from node_modules
  */
- 
+
+
 var dbUrl = 'mongodb://instaadmin1:webadmin123@ds119682.mlab.com:19682/instagramdb';
 var http = require('http');
 var path = require('path');
@@ -194,17 +195,14 @@ router.post('/passwordreset', (req, res) => {
 
 router.get('/verifypassword', function(req, res){
     var password;
-    //convert to object id
-    var id = req.query.id;
     Promise.resolve()
     .then(function(){
-      return PasswordReset.findOne({_id: id});
+      return PasswordReset.findById(req.query.id);
     })
     .then(function(pr){
         console.log("Pr");
         console.log(pr);
       if (pr){
-      
         if (pr.expires > new Date()){
       
           password = pr.password;
@@ -214,7 +212,7 @@ router.get('/verifypassword', function(req, res){
         else
         {
           res.redirect('/error?e= Password is expired');
-          console.log("Password is expired");
+          console.log("Password reset link is expired");
         }
       }
       else

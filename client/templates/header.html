@@ -7,7 +7,18 @@
   <input placeholder="Search" value="" type="text" alt="Search box">
 </div>
 <div class="header_right">
+  <button type="button" id="logout">Log Out</button>
   <img src="img/icons/icon1.png" alt="History">
   <img src="img/icons/icon2.png" alt="Favorite photos">
   <img src="img/icons/icon3.png" alt="User profile">
 </div>
+
+<script>
+  /*global $*/
+  $('#logout').click( () => {
+    $.post('/logout')
+    .done( () => {
+      window.location.replace('/login');
+    });
+  });
+</script>

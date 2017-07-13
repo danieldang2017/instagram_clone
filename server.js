@@ -79,7 +79,7 @@ userAuth.init(passport);
 /*
  *I. Root access redirection
 */
- 
+
 router.get('/', userAuth.isAuthenticated, function(req, res){
   console.log('client requests root');
   res.sendfile(path.join(__dirname, 'client/views','index.html'));
@@ -270,6 +270,13 @@ router.post('/register', registration.validate, (req, res, next) => {
     })(req, res, next);
   }
 });
+
+ 
+router.post('/logout', (req, res) => {
+  req.logout();
+  res.json({success: true});
+});
+
  
 /* III. ForgotPassword.html
  *    1. 

@@ -1,12 +1,25 @@
-/*#NodeJS server
+/*Group information:
+ *
+ *Student 1:
+ *
+ *Tran Ngoc Phuong Dang (a.k.a Daniel). Student number: 7843618
+ *
+ *Student 2:
+ *
+ *Chi Hieu Tran (a.k.a Winson). Student number: 7822620
+ *
+ *Student 3:
+ *
+ *Duncan Robertson. Student number: 8074833
+ */
+ 
+ /*#NodeJS server
  *A simple server to serve the Instagram clone website
  *
 --------------------------------- Server configuration ----------------------------------
  *
  *1. Adds external modules from node_modules
  */
-
-
 var dbUrl = 'mongodb://instaadmin1:webadmin123@ds119682.mlab.com:19682/instagramdb';
 var http = require('http');
 var path = require('path');
@@ -15,8 +28,6 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var validate = require('./js/validate.js');
 var registration = require('./js/registration.js');
-
-
 
 // 2. Adds schemas from models
 var Post = require('./models/Post.js');
@@ -82,28 +93,23 @@ userAuth.init(passport);
 */
 
 router.get('/', userAuth.isAuthenticated, function(req, res){
-  console.log('client requests root');
   res.sendfile(path.join(__dirname, 'client/views','index.html'));
 });
 
 router.get('/login', function(req, res){
-  console.log('client requests root');
   res.sendfile(path.join(__dirname, 'client/views','loginAndRegistration.html'));
 });
 
 router.get('/forgotPassword.html', function(req, res){
-  console.log('client requests root');
   res.sendfile(path.join(__dirname, 'client/views','forgotPassword.html'));
 });
 
 
 router.get('/index',userAuth.isAuthenticated, function(req, res){
-  console.log('client requests root');
   res.sendfile(path.join(__dirname, 'client/views','index.html'));
 });
 
 router.get('/error',function(req, res){
-  console.log('client requests root');
   res.sendfile(path.join(__dirname, 'client/views','Error.html'));
 });
 
@@ -113,7 +119,6 @@ router.get('/error',function(req, res){
 
 router.post('/getUserProfile', (req, res) => {
   var currentUser = req.session.passport.user;
-  console.log(currentUser);
   User.findById(currentUser)
   .then((user) => {
     res.json(user);
@@ -143,7 +148,6 @@ router.post('/getPostsContent', function(req, res){
  */
 //tell the router how to handle a post request from the signin page
 router.post('/signin', function(req, res, next) {
-    console.log("Client Request Login");
     //tell passport to attempt to authenticate the login
     passport.authenticate('login', function(err, user, info) {
     //callback returns here
@@ -172,7 +176,6 @@ router.post('/passwordreset', (req, res) => {
     })
     .then(function(user){
       if (user){
-        console.log("User found");
         var pr = new PasswordReset();
         pr.userId = user.id;
         pr.password = hash.createHash(req.body.password);
@@ -201,8 +204,6 @@ router.get('/verifypassword', function(req, res){
       return PasswordReset.findById(req.query.id);
     })
     .then(function(pr){
-        console.log("Pr");
-        console.log(pr);
       if (pr){
         if (pr.expires > new Date()){
       
@@ -212,37 +213,27 @@ router.get('/verifypassword', function(req, res){
         }
         else
         {
-          res.redirect('/error?e= Password is expired');
-          console.log("Password reset link is expired");
+          res.redirect('/error?e=passwordExpired');
         }
       }
       else
       {
-        res.redirect('/error?e= Invalid Verification');
-        console.log("Invalid Verification");
+        res.redirect('/error?e=invalidVerification');
       }
     })
     .then(function(user){
       if (user){
-        console.log("Old Password")
-        console.log(user.password)
         user.password = password;
         return user.save();
       }
     })
     .then(function(user){
       if(user){
-        console.log("New Password")
-        console.log(user.password)
-        //console.log("User");
-       // console.log(user);
-        console.log("Reset successful");
         res.redirect('/login');
       }
       else
       {
-        res.redirect('/error?e= Reset Failed');
-        console.log("Reset Failed")
+        res.redirect('/error?e=resetFailed');
       }
     })
 });
@@ -257,12 +248,9 @@ router.post('/register', registration.validate, (req, res, next) => {
   } else {
     passport.authenticate('signup', (err, user) => {
       if(!err && user) {
-        console.log('User ' + user.userName + ' created');
-        console.log(user);
         response.success = true;
         
       } else {
-        console.log(user.userName + ' could not be created');
         response.success = false;
         response.failures.push({field: 'none', reason: 'Registration failed, try again later'});
       }
@@ -278,11 +266,6 @@ router.post('/logout', (req, res) => {
   req.logout();
   res.json({success: true});
 });
-
- 
-/* III. ForgotPassword.html
- *    1. 
- */
 
 /*---------------------------------------------------------------------------------------
  *Starts server

@@ -1,3 +1,17 @@
+<!-- Group information:
+
+Student 1:
+
+Tran Ngoc Phuong Dang (a.k.a Daniel). Student number: 7843618
+
+Student 2:
+
+Chi Hieu Tran (a.k.a Winson). Student number: 7822620
+
+Student 3:
+
+Duncan Robertson. Student number: 8074833 -->
+
 <!DOCTYPE html>
   <head>
     <meta charset="UTF-8" />
@@ -11,8 +25,16 @@
     <script src="../js/jquery-3.2.1.min.js"></script>
  <script>
      function loadPage(){
-         var error = location.search.split('e=')[1]
-         $('#error').html(error);
+       var msg = '';
+         var error = window.location.href.split("=")[1];
+         if (error == "passwordExpired") {
+           msg += 'This password has expired!'
+         } else if (error == "invalidVerification") {
+           msg += 'This verification is invalid!'
+         } else {
+           msg += 'Failed to reset your password!'
+         }
+         $('#error').html(msg);
      }
  </script>
     
@@ -22,7 +44,7 @@
       <header>
         <h1>Instagram</h1>
 				<nav class="codrops-demos">
-				  <span>Sign up to see photos and videos from your friends.</span>
+				  <span>Oops...Something went wrong!</span>
 				</nav>
       </header>
       <section>				
@@ -35,7 +57,7 @@
              
                 <h1>Error</h1> 
                 <p> 
-                  <label id="error" ></label>
+                  <label id="error" style="padding-left: 130px;" ></label>
                 </p>
               </form>
             </div>

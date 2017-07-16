@@ -268,15 +268,6 @@ body {
 	width: 50%;
 }
 
-#logout {
-	display: block;
-	padding: 5%;
-	cursor: pointer;
-	color: #FFFFFF;
-	background-color: #3897f0;
-	font-family: Arial;
-	font-weight: bold;
-	letter-spacing: normal;
-	margin-left: auto;
-	margin-bottom: 10%;
+#logout:hover{
+	cursor:pointer
 }

@@ -1,3 +1,19 @@
+/*Group information:
+ *
+ *Student 1:
+ *
+ *Tran Ngoc Phuong Dang (a.k.a Daniel). Student number: 7843618
+ *
+ *Student 2:
+ *
+ *Chi Hieu Tran (a.k.a Winson). Student number: 7822620
+ *
+ *Student 3:
+ *
+ *Duncan Robertson. Student number: 8074833
+ */
+ 
+ "use strict";
 const nodemailer = require('nodemailer');
 
 module.exports.send = function(to, subject, text){
@@ -23,8 +39,7 @@ module.exports.send = function(to, subject, text){
     // send mail with defined transport object
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            return console.log(error);
+            return error;
         }
-        console.log('Message %s sent: %s', info.messageId, info.response);
     });
 }

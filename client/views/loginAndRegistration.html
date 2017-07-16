@@ -1,3 +1,17 @@
+<!-- Group information:
+
+Student 1:
+
+Tran Ngoc Phuong Dang (a.k.a Daniel). Student number: 7843618
+
+Student 2:
+
+Chi Hieu Tran (a.k.a Winson). Student number: 7822620
+
+Student 3:
+
+Duncan Robertson. Student number: 8074833 -->
+
 <!DOCTYPE html>
   <head>
     <meta charset="UTF-8" />
@@ -13,7 +27,8 @@
  
          <script>
             /*global $*/
-            function handleSigninAttempt(){
+              $(document).ready( ()=> {
+              $('#login').submit( ()=> {
                 var email = $('#email').val();
                 var password = $('#password').val();
                 
@@ -23,22 +38,18 @@
                         return $.post('signin', 'username=' + email + '&password=' + password);
                     })
                 .then(function(auth){
+                  $('#error').html(auth.isValid);
                         if (auth.isValid){
-                            $('#error').text = 'Login Successful';
                             window.location.replace('index');
                         } else {
-                            $('#error').html(auth.message);
-                            $('#email').html('');
-                            $('#password').html('');
+                          $('#errorForm').addClass('has-error');
+                          $('#error').html('Invalid email or password!');
+                          $('#loginForm').trigger("reset");
                         }
                     })
-                .catch(function(err){
-                        console.log(err);
-                    })
-                } else {
-                    $('#error').html('Invalid Email or Password');
                 }
-            }
+              });
+            });
 
             $(document).ready( ()=> {
               $('#register').submit( ()=> {
@@ -143,9 +154,12 @@
           <a class="hiddenanchor" id="tologin"></a>
           <div id="wrapper">
             <div id="login" class="animate form">
-              <form> 
-                <p id="error"></p>
+              <form id="loginForm" onSubmit="return false;" autocomplete="on"> 
                 <h1>Log in</h1> 
+                <div class="form-group" id="errorForm">
+                  <span class="help-block" id="error"></span>
+                </div>
+                
                 <p> 
                   <label for="email" class="uname" data-icon="u" > Your email</label>
                   <input name="email" required="required" type="text" placeholder="Email" id="email"/>
@@ -157,12 +171,12 @@
                 <p class="keeplogin"> 
   							  <input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" /> 
   							  <label for="loginkeeping">Keep me logged in</label>
-  							  <span style="padding-right: 20px"><a href="/forgotPassword.html">Forgot password?</a></span>
+  							  <span style="padding-left: 45px"><a style="text-decoration:none; font-size: 14px; font-style: italic;" href="/forgotPassword.html">Forgot password?</a></span>
   						  </p>
   						  
   						  
                 <p class="login button"> 
-                  <input type="button" value="Login" id="btnLogin" onclick="handleSigninAttempt()"/> 
+                  <input type="submit" value="Login"/> 
   						  </p>
   						  
   						  

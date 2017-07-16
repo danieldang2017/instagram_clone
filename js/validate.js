@@ -1,4 +1,19 @@
-// Provides all the data validation functions required by the server
+/*Group information:
+ *
+ *Student 1:
+ *
+ *Tran Ngoc Phuong Dang (a.k.a Daniel). Student number: 7843618
+ *
+ *Student 2:
+ *
+ *Chi Hieu Tran (a.k.a Winson). Student number: 7822620
+ *
+ *Student 3:
+ *
+ *Duncan Robertson. Student number: 8074833
+ */
+ 
+ // Provides all the data validation functions required by the server
 const User = require('../models/User.js');
 const usernameField = 'userName';
 const emailField = 'email';
@@ -21,7 +36,6 @@ module.exports.userExists = (input, callback) => {
             
         })
         .catch((err) => {
-            console.log('An error occurred checking for username\n' + err);
             return false;
         });
     }
@@ -63,7 +77,6 @@ module.exports.emailExists = (input, callback) => {
             
         })
         .catch((err) => {
-            console.log('An error occurred checking for email address\n' + err);
             return false;
         });
     }

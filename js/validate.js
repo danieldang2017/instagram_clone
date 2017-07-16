@@ -106,7 +106,7 @@ module.exports.email = (input) => {
         return false;
     }
     var regex = /^[a-z A-Z 0-9]+\@[a-z A-Z 0-9]+(\.[a-z A-Z 0-9]+)+$/;
-    if(input.length > 2 && regex.test(input)) {
+    if(input.length > 4 && regex.test(input)) {
         return true;
     }
     else {

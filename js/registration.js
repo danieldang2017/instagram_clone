@@ -19,7 +19,7 @@ module.exports.validate = (req, res, next) => {
         }
         
         if(!validator.username(register.username)) {
-            failures.push({field: 'username', reason: 'Invalid username'});
+            failures.push({field: 'username', reason: 'Usernames must be at least 3 characters'});
             valid = false;
         }
         
@@ -29,7 +29,7 @@ module.exports.validate = (req, res, next) => {
         }
         
         if(!validator.password(register.password)) {
-            failures.push({field: 'password', reason: 'Invalid password'});
+            failures.push({field: 'password', reason: 'Password must be at least six characters and only contain letters and number'});
             valid = false;
         }
         
@@ -50,13 +50,13 @@ module.exports.validate = (req, res, next) => {
         })
         .then( (result) => {
             if(result) {
-                failures.push({field: 'email', reason: 'Email already registered'});
+                failures.push({field: 'email', reason: 'Email account already registered'});
                 valid = false;
             }
         })
         .catch((err) => {
             console.log('Error validating unique email\n' + err);
-            failures.push({field: 'email', reason: 'Error validating email'});
+            failures.push({field: 'email', reason: 'Internal error, please try again'});
             valid = false;
         })
         .then( () => {

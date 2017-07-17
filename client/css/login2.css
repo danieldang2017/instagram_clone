@@ -32,7 +32,7 @@
 a.hiddenanchor{
 	display: none;
 }
-/** The wrapper that will contain our two forms **/
+/** The wrapper that will contain two forms **/
 #wrapper{
 	width: 60%;
 	right: 0px;
@@ -58,7 +58,6 @@ a.hiddenanchor{
 	text-align: center;
 	padding-bottom: 30px;
 }
-/** For the moment only webkit supports the background-clip:text; */
 #wrapper h1{
     background: -webkit-repeating-linear-gradient(-45deg, 
 	rgb(18, 83, 93) , 
@@ -94,7 +93,6 @@ a.hiddenanchor{
 	position: relative;
 }
 
-/**** advanced input styling ****/
 /* placeholder */
 ::-webkit-input-placeholder  { 
 	color: rgb(190, 188, 188); 
@@ -345,8 +343,7 @@ p.change_link{
 	-o-animation-name: scaleOut;
 	animation-name: scaleOut;
 }
-
-/** the actual animation, credit where due : http://daneden.me/animate/ ***/
+/* Animation*/
 .animate{
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-fill-mode: both;
@@ -364,7 +361,7 @@ p.change_link{
 	animation-fill-mode: both;
 }
 
-/** yerk some ugly IE fixes 'cause I know someone will ask "why does it look ugly in IE?", no matter how many warnings I will put in the article */
+/* IE fixes */
 
 .lt8 #wrapper input{
 	padding: 10px 5px 10px 32px;

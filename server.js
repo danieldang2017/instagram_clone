@@ -113,6 +113,10 @@ router.get('/error',function(req, res){
   res.sendfile(path.join(__dirname, 'client/views','Error.html'));
 });
 
+router.get('/success', function(req, res){
+  res.sendfile(path.join(__dirname, 'client/views','resetSuccess.html'));
+});
+
 /* I. Index.html
  *    1. Load user profile
 */
@@ -184,8 +188,15 @@ router.post('/passwordreset', (req, res) => {
         .then(function(pr){
           if (pr){
             var url = req.protocol + '://' + req.headers.host;
-            email.send(req.body.email, 'password reset', url + '/verifypassword?id=' + pr.id);
-            res.json({isValid: true, message: 'Your Account has been reset! Please check your email to confirm'});
+            var emailBody = "Dear " + user.firstName + " " + user.firstName + "," + "\n \n";
+            emailBody = emailBody + "We have received a request to reset the password for this email. \n"
+            emailBody = emailBody + "Please click on the link below to confirm your new password. \n \n"
+            emailBody = emailBody + url + '/verifypassword?id=' + pr.id;
+            emailBody = emailBody + "\n \n";
+            emailBody = emailBody + "Thank You! \n";
+            emailBody = emailBody + "Instagram Customer Service";
+            email.send(req.body.email, 'Reset Password Confirmation', emailBody);
+            res.json({isValid: true, message: 'Your Account has been reset! </br> Please check your email to confirm'});
           }
         });
       }

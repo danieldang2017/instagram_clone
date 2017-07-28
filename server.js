@@ -28,6 +28,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var validate = require('./js/validate.js');
 var registration = require('./js/registration.js');
+const Like = require('./models/Like.js');
 
 // 2. Adds schemas from models
 var Post = require('./models/Post.js');
@@ -260,16 +261,74 @@ router.post('/register', registration.validate, (req, res, next) => {
     passport.authenticate('signup', (err, user) => {
       if(!err && user) {
         response.success = true;
-        
-      } else {
+      } 
+      else {
         response.success = false;
         response.failures.push({field: 'none', reason: 'Registration failed, try again later'});
       }
-      
-
       res.json(response);
     })(req, res, next);
   }
+});
+
+//tell the router how to handle a post request to /incrLike
+router.post('/incrLike', userAuth.isAuthenticated, function(req, res){
+  Like.findOne({userId: req.user.id, postId: req.body.id})
+  .then(function(like){
+    // Increase Like
+    if (!like){  
+      //go get the post record
+      Post.findById(req.body.id)
+      .then(function(post){
+        //increment the like count
+        post.likeCount++;
+        //save the record back to the database
+        return post.save(post);
+      })
+      .then(function(post){
+        var like = new Like();
+        like.userId = req.user.id;
+        like.postId = req.body.id;
+        like.save();
+        //a successful save returns back the updated object
+        res.json({id: req.body.id, count: post.likeCount, result: true});  
+      })
+    }
+    //Decrease Like
+    else { 
+      Post.findById(req.body.id)
+      .then(function(post){
+        //decrease the like count
+        post.likeCount--;
+        //save the record back to the database
+        return post.save(post);
+      })
+      .then(function(post){
+        Like.remove({userId: req.user.id, postId: req.body.id}).exec();
+        //a successful save returns back the updated object
+        res.json({id: req.body.id, count: post.likeCount, result: false});    
+      })
+    }
+  })
+  .catch(function(err){
+    console.log(err);
+  })
+});
+
+
+//tell the router how to handle a post request to /incrLike
+router.post('/isLike', function(req, res){
+  Like.findOne({userId: req.user.id, postId: req.body.id})
+  .then(function(like){
+    if (!like)
+    {
+       res.json(false); 
+    }
+    else
+    {
+       res.json(true); 
+    }
+  })
 });
 
  

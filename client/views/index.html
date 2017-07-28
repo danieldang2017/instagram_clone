@@ -91,7 +91,7 @@ Duncan Robertson. Student number: 8074833 -->
                 <img src="" class="cards" id="thumbnail' + topProfiles[i]._id + j +'"/>\
               </a>\
               <h4>\
-                <img src="../img/icons/icon2.png" height="15px" alt="Likes">\
+                <img src="../img/icons/icon2.png" id="like' + topProfiles[i]._id + j +'"  height="15px" alt="Likes">\
                 <i id="popularity' + topProfiles[i]._id + j +'"></i>\
               </h4>\
               <p class="text_column" id="status' + topProfiles[i]._id + j +'"></p>\
@@ -117,11 +117,69 @@ Duncan Robertson. Student number: 8074833 -->
         .then((posts) => {
           var postsContent = posts;
           $('#thumbnail' + id + j).attr("src","../img/instagram_img/" + postsContent[j].image);
+         
+          var postid = postsContent[j]._id;
+          var likeCountTag = "popularity" + id + j;
+          
+          var likeIconIDTag = "like" + id + j;
+          isLike(postid, likeIconIDTag, likeIconIDTag);
+          
+        //  $('#like' + id + j).attr('onclick','likeClick("' + postid + '", "' + likeCountTag +'")');
+          $('#like' + id + j).attr('onclick','likeClick("' + postid + '", "' + likeCountTag +'","' + likeIconIDTag + '")');
           $('#popularity' + id + j).html(postsContent[j].likeCount);
           $('#status' + id + j).html(postsContent[j].comment);
           $('#hastag' + id + j).html(postsContent[j].hashTag);
         });
       }
+      
+          //handle a click on the LIKE button we've included with each post
+            //we receive the ID of the post as a parameter
+            function likeClick(id, likeCounttag, likeIconTag){
+              Promise.resolve()
+              .then(function(){
+                    //jQuery provides a nice convenience method for easily sending a post with parameters in JSON
+                    //here we pass the ID to the incrLike route on the server side so it can do the incrementing for us
+                    //note the return. This MUST be here, or the subsequent then will not wait for this to complete
+                    return $.post('incrLike', {id : id});
+                })
+                .then(function(like){
+                    if (like.count > 0)
+                    {
+                        //jQuery provides a nice convenience methot for easily setting the count to the value returned
+                        $('#' + likeCounttag).html(like.count);
+                    }
+                    if (like.result)
+                    {
+                        $('#' + likeIconTag).attr('src','../img/icons/Like.png');
+                    }
+                    else
+                    {
+                       $('#' + likeIconTag).attr('src','../img/icons/icon2.png');
+                    }
+                })
+                .catch(function(err){
+                    //always include a catch for the promise chain
+                    console.log(err);
+                });
+            }
+            
+            function isLike(postID, likeIconID)
+            {
+              Promise.resolve()
+              .then(function(){
+              return $.post('isLike', {id : postID});
+                })
+              .then(function(result){
+                if(result)
+                {
+                  console.log("true")
+                   $('#' + likeIconID).attr("src","../img/icons/Like.png");
+                }
+                else
+                {
+                }
+              })
+            }
       
       
     </script>

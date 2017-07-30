@@ -147,7 +147,7 @@ body {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	height: 50px;
-	width: 100px;
+	width: 110px;
 	margin: 0 20px 0 0;
 }
 .thumbnail {
@@ -265,7 +265,7 @@ body {
 }
 
 #profileImage {
-	width: 50%;
+	width: 40%;
 }
 
 #logout:hover{

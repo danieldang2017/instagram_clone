@@ -29,6 +29,7 @@ var mongoose = require('mongoose');
 var validate = require('./js/validate.js');
 var registration = require('./js/registration.js');
 const Like = require('./models/Like.js');
+const Follow = require('./models/Follow.js');
 
 // 2. Adds schemas from models
 var Post = require('./models/Post.js');
@@ -252,7 +253,6 @@ router.get('/verifypassword', function(req, res){
 
 router.post('/register', registration.validate, (req, res, next) => {
   var response = {};
-  
   if(!req.valid) {
     response.success = false;
     response.failures = req.failures;
@@ -317,7 +317,7 @@ router.post('/incrLike', userAuth.isAuthenticated, function(req, res){
 
 
 //tell the router how to handle a post request to /incrLike
-router.post('/isLike', function(req, res){
+router.post('/isLike', userAuth.isAuthenticated,function(req, res){
   Like.findOne({userId: req.user.id, postId: req.body.id})
   .then(function(like){
     if (!like)
@@ -331,6 +331,74 @@ router.post('/isLike', function(req, res){
   })
 });
 
+
+//tell the router how to handle a post request to /incrFollow
+router.post('/incrFollow', userAuth.isAuthenticated, function(req, res){
+  Follow.findOne({userId: req.user.id, followId: req.body.followid})
+  .then(function(follow){
+    // increase follower and following 
+    if (!follow){  
+      User.findById(req.body.followid)
+      .then(function(user){
+        user.followersCount++;
+        return user.save(user);
+      })
+      .then(function(){
+        User.findById(req.user.id)
+        .then(function(user) {
+            user.followingCount++;
+            return user.save(user);
+        })
+        // save record when user follow a person
+        .then(function(user) {
+              var follow = new Follow();
+               follow.userId = req.user.id;
+               follow.followId = req.body.followid;
+               follow.save();
+             res.json({id: req.body.followid, followingCount: user.followingCount, result: true});  
+        })
+      })
+    }
+    //Decrease follower and following
+    else { 
+     User.findById(req.body.followid)
+      .then(function(user){
+        user.followersCount--;
+        return user.save(user);
+      })
+      .then(function(){
+        User.findById(req.user.id)
+        .then(function(user) {
+            user.followingCount--;
+            return user.save(user);
+        })
+        // remove follow record when user unfollow
+        .then(function(user) {
+           Follow.remove({userId: req.user.id, followId: req.body.followid}).exec();
+             res.json({id: req.body.followid, followingCount: user.followingCount, result: false});  
+        })
+      })
+    }
+  })
+  .catch(function(err){
+    console.log(err);
+  })
+});
+
+//tell the router how to handle a post request to /isFollow
+router.post('/isFollow', userAuth.isAuthenticated,function(req, res){
+  Follow.findOne({userId: req.user.id, followId: req.body.followId})
+  .then(function(follow){
+    if (!follow)
+    {
+       res.json(false); 
+    }
+    else
+    {
+       res.json(true); 
+    }
+  })
+});
  
 router.post('/logout', (req, res) => {
   req.logout();

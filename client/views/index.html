@@ -75,11 +75,14 @@ Duncan Robertson. Student number: 8074833 -->
               <img alt="verified" src="../img/icons/icon4.png">\
               <p id="topProfileFullName' + i + '"></p>\
             </h4>\
-            <button>Follow</button>\
+            <button id="follow'+ topProfiles[i]._id + '" >Follow</button>\
           </div>\
           <div id="postContainer' + topProfiles[i]._id + '">\
           </div>\
         </div>');
+        
+         $('#follow' + topProfiles[i]._id).attr('onclick','followerClick("follow' + topProfiles[i]._id + '", "' + topProfiles[i]._id + '")');
+        isFollow("follow" +topProfiles[i]._id , topProfiles[i]._id );
         addPosts(topProfiles, i);
       }
     
@@ -123,8 +126,6 @@ Duncan Robertson. Student number: 8074833 -->
           
           var likeIconIDTag = "like" + id + j;
           isLike(postid, likeIconIDTag, likeIconIDTag);
-          
-        //  $('#like' + id + j).attr('onclick','likeClick("' + postid + '", "' + likeCountTag +'")');
           $('#like' + id + j).attr('onclick','likeClick("' + postid + '", "' + likeCountTag +'","' + likeIconIDTag + '")');
           $('#popularity' + id + j).html(postsContent[j].likeCount);
           $('#status' + id + j).html(postsContent[j].comment);
@@ -137,7 +138,6 @@ Duncan Robertson. Student number: 8074833 -->
             function likeClick(id, likeCounttag, likeIconTag){
               Promise.resolve()
               .then(function(){
-                    //jQuery provides a nice convenience method for easily sending a post with parameters in JSON
                     //here we pass the ID to the incrLike route on the server side so it can do the incrementing for us
                     //note the return. This MUST be here, or the subsequent then will not wait for this to complete
                     return $.post('incrLike', {id : id});
@@ -145,7 +145,7 @@ Duncan Robertson. Student number: 8074833 -->
                 .then(function(like){
                     if (like.count > 0)
                     {
-                        //jQuery provides a nice convenience methot for easily setting the count to the value returned
+                        //jQuery provides a nice convenience method for easily setting the count to the value returned
                         $('#' + likeCounttag).html(like.count);
                     }
                     if (like.result)
@@ -162,7 +162,7 @@ Duncan Robertson. Student number: 8074833 -->
                     console.log(err);
                 });
             }
-            
+
             function isLike(postID, likeIconID)
             {
               Promise.resolve()
@@ -175,12 +175,53 @@ Duncan Robertson. Student number: 8074833 -->
                   console.log("true")
                    $('#' + likeIconID).attr("src","../img/icons/Like.png");
                 }
-                else
-                {
-                }
               })
             }
       
+            //handle a click on the Follow button 
+            //we receive the ID of user as a parameter
+            function followerClick(followButtonID, followUserID){
+              console.log(followButtonID);
+              console.log(followUserID);
+              Promise.resolve()
+              .then(function(){
+                    return $.post('incrFollow', {followid : followUserID});
+                })
+                .then(function(user){
+                    if (user.followingCount > 0)
+                    {
+                        $('#followingCount').html(user.followingCount);
+                    }
+                    if (user.result)
+                    {
+                        $('#' + followButtonID).html('Following');
+                    }
+                    else
+                    {
+                        $('#' + followButtonID).html('Follow');
+                    }
+                })
+                .catch(function(err){
+                    //always include a catch for the promise chain
+                    console.log(err);
+                });
+            }
+            
+            // Check whether the user is followed or not in order to display following button
+            function isFollow(followButtonID, followUserID)
+            {
+              Promise.resolve()
+               .then(function(){
+                  return $.post('isFollow', {followId : followUserID});
+                })
+                // Display as following wehn
+              .then(function(result){
+                if(result)
+                {
+                   $('#' + followButtonID).html('Following');
+                }
+              })
+            }
       
     </script>
   </head>

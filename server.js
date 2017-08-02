@@ -119,6 +119,10 @@ router.get('/success', function(req, res){
   res.sendfile(path.join(__dirname, 'client/views','resetSuccess.html'));
 });
 
+router.get('/postList', function(req, res){
+  res.sendfile(path.join(__dirname, 'client/views','postList.html'));
+});
+
 /* I. Index.html
  *    1. Load user profile
 */
@@ -131,10 +135,25 @@ router.post('/getUserProfile', (req, res) => {
   });
 });
 
+router.post('/searchProfile', (req, res) => {
+  var currentUser = req.body.user;
+  User.findById(currentUser)
+  .then((user) => {
+    res.json(user);
+  });
+});
+
+router.post('/searchUser', (req, res) => {
+  User.findOne({userName: req.body.user})
+  .then((user) => {
+    res.json(user);
+  });
+});
+
 
 //  2. Load top profiles
 router.post('/getTopProfiles', function(req, res){
-   User.find().sort({followersCount : -1}).limit(2)
+   User.find().sort({followersCount : -1}).limit(parseInt(req.body.max))
   .then((profiles) => {
     res.json(profiles);
   });
@@ -142,7 +161,8 @@ router.post('/getTopProfiles', function(req, res){
 
 //  3. Load top posts
 router.post('/getPostsContent', function(req, res){
-   Post.find({ "userId" : req.body.id}).limit(4)
+  
+   Post.find({ "userId" : req.body.id}).limit(parseInt(req.body.max))
   .then((postsContent) => {
     res.json(postsContent);
   });

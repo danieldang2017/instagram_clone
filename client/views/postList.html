@@ -31,19 +31,14 @@ Duncan Robertson. Student number: 8074833 -->
     /*global $*/
       // Function to load the contents of the page
       function loadPage() {
+        var id = window.location.href.split("=")[1];
         Promise.resolve()
         .then(() => {
-          return $.post('getUserProfile');
+          return $.post('searchProfile', {user: id});
         })
         .then((post) => {
           setUserProfile(post);
         })
-        .then(() => {
-          return $.post('getTopProfiles');
-        })
-        .then((posts) => {
-          setTopProfiles(posts);
-        });
       }
       
       // Function to set the user profile
@@ -54,65 +49,57 @@ Duncan Robertson. Student number: 8074833 -->
         $('#postCount').html(userProfile.postsCount);
         $('#followerCount').html(userProfile.followersCount);
         $('#followingCount').html(userProfile.followingCount);
+        addUserGallery(userProfile);
+        setUserGalleryContent(userProfile);
       }
       
-      // Function to set the top profiles
-      function setTopProfiles(posts){
-        var topProfiles = posts;
-        for (var i = 0; i < topProfiles.length; i++) {
-          addGallery(topProfiles, i);
-          setGalleryContent(topProfiles, i);
-        } 
-      }
-      
-      // Function to add Gallery html to the Gallery Container
-      function addGallery(topProfiles, i){
+      // Function to add Gallery of user recent post to the Gallery Container
+      function addUserGallery(userProfile){
         $('#galleryContainer').append('<div class="gallery">\
           <div class="gallery_upper">\
-            <img src="" height="50px" class="profile" id="topProfileImage' + i + '">\
+            <img src="" height="50px" class="profile" id="userProfileImage">\
             <h4>\
-            <span id="topProfileUsername' + i + '"></span> \
+            <a href="/postList?id='+userProfile._id+'" ><span id="userProfileUsername"></span></a> \
               <img alt="verified" src="../img/icons/icon4.png">\
-              <p id="topProfileFullName' + i + '"></p>\
+              <p id="userProfileFullName"></p>\
             </h4>\
-            <button>Follow</button>\
           </div>\
-          <div id="postContainer' + topProfiles[i]._id + '">\
+          <div id="postContainer' + userProfile._id + '">\
           </div>\
         </div>');
-        addPosts(topProfiles, i);
+        addUserPosts(userProfile);
       }
-    
-      // Function to add Posts html to Post Container
-      function addPosts(topProfiles, i){
-        for (var j = 0; j < 4; j++) {
-          $('#postContainer' + topProfiles[i]._id).append('<div class="thumbnail">\
+      
+      // Function to set content of User Upper Gallery
+      function setUserGalleryContent(userProfile){
+        $('#userProfileImage').attr("src","../img/profile_img/" + userProfile.imageProfile);
+        $('#userProfileUsername').html(userProfile.displayName);
+        $('#userProfileFullName').html(userProfile.firstName + ' ' + userProfile.lastName);
+      }
+      
+      // Function to add user Recent Posts html to Post Container
+      function addUserPosts(userProfile){
+        for (var j = 0; j < userProfile.postsCount; j++) {
+          $('#postContainer' + userProfile._id).append('<div class="thumbnail">\
               <a href="#">\
-                <img src="" class="cards" id="thumbnail' + topProfiles[i]._id + j +'"/>\
+                <img src="" class="cards" id="thumbnail' + userProfile._id + j +'"/>\
               </a>\
               <h4>\
-                <img src="../img/icons/icon2.png" id="like' + topProfiles[i]._id + j +'"  height="15px" alt="Likes">\
-                <i id="popularity' + topProfiles[i]._id + j +'"></i>\
+                <img src="../img/icons/icon2.png" id="like' + userProfile._id + j +'"  height="15px" alt="Likes">\
+                <i id="popularity' + userProfile._id + j +'"></i>\
               </h4>\
-              <p class="text_column" id="status' + topProfiles[i]._id + j +'"></p>\
-              <p class="tag" id="hastag' + topProfiles[i]._id + j +'"></p>\
+              <p class="text_column" id="status' + userProfile._id + j +'"></p>\
+              <p class="tag" id="hastag' + userProfile._id + j +'"></p>\
             </div>');
-          setPostsContent(topProfiles[i]._id, j);
+          setPostsContent(userProfile._id, j, userProfile.postsCount);
         }
       }
     
-      // Function to set content of Upper Gallery
-      function setGalleryContent(topProfiles, i){
-        $('#topProfileImage' + i).attr("src","../img/profile_img/" + topProfiles[i].imageProfile);
-        $('#topProfileUsername' + i).html(topProfiles[i].displayName);
-        $('#topProfileFullName' + i).html(topProfiles[i].firstName + ' ' + topProfiles[i].lastName);
-      }
-    
       // Function to set content of Posts
-      function setPostsContent(id, j){
+      function setPostsContent(id, j, max){
         Promise.resolve()
         .then(() => {
-          return $.post('getPostsContent', {id: id});
+          return $.post('getPostsContent', {id: id, max: max});
         })
         .then((posts) => {
           var postsContent = posts;

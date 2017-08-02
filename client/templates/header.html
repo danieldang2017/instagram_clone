@@ -4,7 +4,9 @@
   <img src="img/logo/logo_img3.png" alt="Brand">
 </div>
 <div class="header_center">
-  <input placeholder="Search" value="" type="text" alt="Search box">
+  <form onsubmit="search()"><input id="searchBox" placeholder="Search" value="" type="text" alt="Search box"></form>
+    
+  
 </div>
 <div class="header_right">
   <a href="../views/postDetails.html"><img src="img/icons/icon2.png" alt="Favorite photos"></a>
@@ -20,4 +22,16 @@
       window.location.replace('/login');
     });
   });
+  
+  function search()
+      {
+        Promise.resolve()
+            .then(() => {
+              return $.post('/searchUser', {user: $('#searchBox').val()});
+            })
+            .done((user) => {
+              console.log(user._id);
+              window.location.href = '/postList?id=' + user._id;
+            });
+      }
 </script>

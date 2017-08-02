@@ -39,7 +39,7 @@ Duncan Robertson. Student number: 8074833 -->
           setUserProfile(post);
         })
         .then(() => {
-          return $.post('getTopProfiles');
+          return $.post('getTopProfiles', {max: 2});
         })
         .then((posts) => {
           setTopProfiles(posts);
@@ -54,6 +54,50 @@ Duncan Robertson. Student number: 8074833 -->
         $('#postCount').html(userProfile.postsCount);
         $('#followerCount').html(userProfile.followersCount);
         $('#followingCount').html(userProfile.followingCount);
+        addUserGallery(userProfile);
+        setUserGalleryContent(userProfile);
+      }
+      
+      // Function to add Gallery of user recent post to the Gallery Container
+      function addUserGallery(userProfile){
+        $('#galleryContainer').append('<div class="gallery">\
+          <div class="gallery_upper">\
+            <img src="" height="50px" class="profile" id="userProfileImage">\
+            <h4>\
+            <a href="/postList?id='+userProfile._id+'" ><span id="userProfileUsername"></span></a> \
+              <img alt="verified" src="../img/icons/icon4.png">\
+              <p id="userProfileFullName"></p>\
+            </h4>\
+          </div>\
+          <div id="postContainer' + userProfile._id + '">\
+          </div>\
+        </div>');
+        addUserPosts(userProfile);
+      }
+      
+      // Function to set content of User Upper Gallery
+      function setUserGalleryContent(userProfile){
+        $('#userProfileImage').attr("src","../img/profile_img/" + userProfile.imageProfile);
+        $('#userProfileUsername').html(userProfile.displayName);
+        $('#userProfileFullName').html(userProfile.firstName + ' ' + userProfile.lastName);
+      }
+      
+      // Function to add user Recent Posts html to Post Container
+      function addUserPosts(userProfile){
+        for (var j = 0; j < 4; j++) {
+          $('#postContainer' + userProfile._id).append('<div class="thumbnail">\
+              <a href="#">\
+                <img src="" class="cards" id="thumbnail' + userProfile._id + j +'"/>\
+              </a>\
+              <h4>\
+                <img src="../img/icons/icon2.png" id="like' + userProfile._id + j +'"  height="15px" alt="Likes">\
+                <i id="popularity' + userProfile._id + j +'"></i>\
+              </h4>\
+              <p class="text_column" id="status' + userProfile._id + j +'"></p>\
+              <p class="tag" id="hastag' + userProfile._id + j +'"></p>\
+            </div>');
+          setPostsContent(userProfile._id, j);
+        }
       }
       
       // Function to set the top profiles
@@ -71,7 +115,7 @@ Duncan Robertson. Student number: 8074833 -->
           <div class="gallery_upper">\
             <img src="" height="50px" class="profile" id="topProfileImage' + i + '">\
             <h4>\
-            <span id="topProfileUsername' + i + '"></span> \
+            <a href="/postList?id='+topProfiles[i]._id+'" ><span id="topProfileUsername' + i + '"></span></a> \
               <img alt="verified" src="../img/icons/icon4.png">\
               <p id="topProfileFullName' + i + '"></p>\
             </h4>\
@@ -115,7 +159,7 @@ Duncan Robertson. Student number: 8074833 -->
       function setPostsContent(id, j){
         Promise.resolve()
         .then(() => {
-          return $.post('getPostsContent', {id: id});
+          return $.post('getPostsContent', {id: id, max: 4});
         })
         .then((posts) => {
           var postsContent = posts;

@@ -26,6 +26,8 @@ var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var formidable = require('formidable');
+var fs = require('fs');
 var validate = require('./js/validate.js');
 var registration = require('./js/registration.js');
 const Like = require('./models/Like.js');
@@ -65,6 +67,7 @@ router.use(bodyParser.urlencoded({
 }));
 
 // 7. Misc module settings
+router.set('view engine', 'ejs')
 validate.userSchema = User;
 mongoose.Promise = global.Promise;
 registration.validator = validate;
@@ -109,6 +112,95 @@ router.get('/forgotPassword.html', function(req, res){
 
 router.get('/index',userAuth.isAuthenticated, function(req, res){
   res.sendfile(path.join(__dirname, 'client/views','index.html'));
+});
+
+router.get('/createPost', userAuth.isAuthenticated, (req, res) => {
+  res.sendfile(path.join(__dirname, 'client/views', 'upload.html'));
+});
+
+router.get('/post/:id([A-Fa-f0-9]{24})', userAuth.isAuthenticated, (req, res) => {
+  //res.sendfile(path.join(__dirname, 'client/views', 'postDetails.html'));
+  var id = req.params.id;
+  Post.findById(id)
+  .then((post) => {
+    if(post) {
+      var hashTags = post.hashTag.split(' ');
+      hashTags.forEach((tag, i, array) => {
+        if(tag[0] != '#') {
+          array[i] = '#' + tag;
+        }
+      });
+      hashTags = hashTags.join(' ');
+      
+      res.render('postDetails.ejs', {
+        status: post.comment,
+        hashtags: hashTags,
+        imagePath: '/img/instagram_img/59812d5efebb2209ad60e711.png',
+        likes: post.likeCount
+      });
+    } else {
+      res.sendfile(__dirname, 'client/views', 'Error.html');
+    }
+    
+  })
+  .catch((err) => {
+    console.log(err);
+    res.sendfile(__dirname, 'client/views', 'Error.html');
+  });
+});
+
+router.post('/createPost', userAuth.isAuthenticated, (req, res) => {
+  console.log('Recieved new post submission');
+  var form = new formidable.IncomingForm();
+  
+  form.parse(req, (err, fields, files) => {
+    if(err) {
+      console.log('Post submission error');
+      res.json({error: 'Submission could not be parsed', status: 400});
+    } else {
+      console.log(fields);
+      console.log(files.file.path);
+      var post = new Post({
+        userId: req.user._id,
+        image: '',
+        comment: fields.status,
+        hashTag: fields.hashtag,
+        likeCount: 0,
+        feedbackCount: 0
+      });
+      
+      var extension = fields.name.split('.').pop();
+      var shortPath = post._id.toString() + '.' + extension;
+      var imagePath = path.join(__dirname, 'client/img/instagram_img', shortPath);
+      
+      fs.rename(files.file.path, imagePath, (err) => {
+        if(err) {
+          console.log('Image move failure');
+          res.json({status: 500});
+        } else {
+          post.image = shortPath;
+          post.save()
+          .then((post) => {
+            console.log('New post successfully created');
+            res.json({success: 'Successfully created new post', status: 200});
+          })
+          .catch((err) => {
+            console.log('Error creating new post\n' + err);
+            fs.unlink(imagePath, (err) => {
+              if(err) {
+                console.log('Image for failed post could not be deleted');
+                console.log('Please manually remove: ' + imagePath);
+              }
+            });
+            res.json({status: 500});
+          });
+        }
+      });
+      
+    }
+  });
+  
+  
 });
 
 router.get('/error',function(req, res){

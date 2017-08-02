@@ -135,7 +135,7 @@ router.get('/post/:id([A-Fa-f0-9]{24})', userAuth.isAuthenticated, (req, res) =>
       res.render('postDetails.ejs', {
         status: post.comment,
         hashtags: hashTags,
-        imagePath: '/img/instagram_img/59812d5efebb2209ad60e711.png',
+        imagePath: '/img/instagram_img/' + post.image,
         likes: post.likeCount
       });
     } else {

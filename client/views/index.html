@@ -90,7 +90,7 @@ Duncan Robertson. Student number: 8074833 -->
       function addPosts(topProfiles, i){
         for (var j = 0; j < 4; j++) {
           $('#postContainer' + topProfiles[i]._id).append('<div class="thumbnail">\
-              <a href="#">\
+              <a href="" id="link' + topProfiles[i]._id + j + '">\
                 <img src="" class="cards" id="thumbnail' + topProfiles[i]._id + j +'"/>\
               </a>\
               <h4>\
@@ -119,6 +119,8 @@ Duncan Robertson. Student number: 8074833 -->
         })
         .then((posts) => {
           var postsContent = posts;
+          
+          $("#link" + id + j).attr('href', '/post/' + postsContent[j]._id);
           $('#thumbnail' + id + j).attr("src","../img/instagram_img/" + postsContent[j].image);
          
           var postid = postsContent[j]._id;

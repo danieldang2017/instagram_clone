@@ -16,11 +16,15 @@
 	<script src="../js/plupload.full.js"></script>
 	<script src="../js/jquery-progressbar.min.js"></script>
 	<script>
+		/* global $ */
+		/* global plupload */
+		
 		// Upload Form
 		$(function() {
 			// Settings ////////////////////////////////////////////////
 			var uploader = new plupload.Uploader({
 				runtimes : 'html5,flash,silverlight', // Set runtimes, here it will use HTML5, if not supported will use flash, etc.
+				url : '/createPost',
 				browse_button : 'pickfiles', // The id on the select files button
 				multi_selection: false, // Allow to select one file each time
 				container : 'uploader', // The id of the upload form container
@@ -36,12 +40,28 @@
 			// Start Upload ////////////////////////////////////////////
 			// When the button with the id "#uploadfiles" is clicked the upload will start
 			$('#uploadfiles').click(function(e) {
+				uploader.settings.multipart_params = { 
+					status: $('#status').val(),
+					hashtag: $('#hashtag').val()}
 				uploader.start();
 				e.preventDefault();
 			});
 
 			uploader.init(); // Initializes the Uploader instance and adds internal event listeners.
-
+			
+			uploader.bind('FileUploaded', (dir, file, obj) => {
+				var response;
+				try {
+					response = eval(obj.response);
+				} catch (err) {
+					response = eval('(' + obj.response + ')');
+				}
+				if(response.success) {
+					$('#msgBox').css('color', 'green').html(response.success);
+				} else {
+					$('#msgBox').css('color', 'red').html(response.error);
+				}
+			})
 			// Selected Files //////////////////////////////////////////
 			// When the user select a file it wiil append one div with the class "addedFile" and a unique id to the "#filelist" div.
 			// This appended div will contain the file name and a remove button
@@ -138,6 +158,8 @@
 </head>
 
 <body>
+	
+	<div id="msgBox"></div>
 
 <div class="upload-form" id="uploader">
 	

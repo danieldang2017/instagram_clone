@@ -13,6 +13,11 @@
 	outline: none;
 }
 
+#msgBox {
+	text-align: center;
+	margin-bottom: 1em;
+}
+
 /* Form Container */
 .upload-form {
 	position: relative;

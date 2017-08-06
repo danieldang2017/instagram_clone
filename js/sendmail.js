@@ -13,7 +13,7 @@
  *Duncan Robertson. Student number: 8074833
  */
  
- "use strict";
+"use strict";
 const nodemailer = require('nodemailer');
 
 module.exports.send = function(to, subject, text){

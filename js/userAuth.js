@@ -77,10 +77,14 @@ function handleSignupAttempt(req, username, password, done) {
     .then( (user) => {
         if(!user) {
             user = new User({
+                displayName: req.body.displayName,
                 userName: username,
                 password: hash.createHash(password),
                 email: req.body.email,
                 imageProfile: 'default.png',
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                dateOfBirth: req.body.dateOfBirth,
                 postsCount: 0,
                 followersCount: 0,
                 followingCount: 0

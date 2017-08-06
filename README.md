@@ -24,6 +24,3 @@ Chi Hieu Tran (a.k.a Winson). Student number: 7822620
 Student 3:
 
 Duncan Robertson. Student number: 8074833
-
-
-mongodb example: https://ide.c9.io/rtbsoft/prog8165

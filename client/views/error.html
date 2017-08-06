@@ -1,0 +1,69 @@
+<!-- Group information:
+
+Student 1:
+
+Tran Ngoc Phuong Dang (a.k.a Daniel). Student number: 7843618
+
+Student 2:
+
+Chi Hieu Tran (a.k.a Winson). Student number: 7822620
+
+Student 3:
+
+Duncan Robertson. Student number: 8074833 -->
+
+<!DOCTYPE html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Error</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" type="text/css" href="../css/login.css" />
+    <link rel="stylesheet" type="text/css" href="../css/login2.css" />
+    <link rel="stylesheet" type="text/css" href="../css/loginAnimation.css" />
+    
+    <!-- Adds JQuery -->
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script>
+     function loadPage(){
+       var msg = '';
+       var error = window.location.href.split("=")[1];
+       if (error == "passwordExpired") {
+         msg += 'This password has expired!'
+       } else if (error == "invalidVerification") {
+         msg += 'This verification is invalid!'
+       } else if (error == "userNotFound") {
+         msg += 'User not found!'
+       } else {
+         msg += 'Failed to reset your password!'
+       }
+       $('#error').html(msg);
+     }
+    </script>
+  </head>
+  <body onload="loadPage();">
+    <div class="container">
+      <header>
+        <h1>Instagram</h1>
+				<nav class="codrops-demos">
+				  <span>Oops...Something went wrong!</span>
+				</nav>
+      </header>
+      <section>				
+        <div id="container_demo" >
+          <a class="hiddenanchor" id="toregister"></a>
+          <a class="hiddenanchor" id="tologin"></a>
+          <div id="wrapper">
+            <div id="login" class="animate form">
+              <form>
+                <h1>Error</h1> 
+                <p> 
+                  <label id="error" style="padding-left: 130px;" ></label>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>  
+      </section>
+    </div>
+  </body>
+</html>

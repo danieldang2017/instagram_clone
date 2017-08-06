@@ -114,7 +114,7 @@ body {
 	padding-top: 20px;
 }
 .gallery_upper img {
-	margin-left: 20px;
+	margin-left: 5px;
 }
 .gallery_upper h4{
 	display: inline-block;
@@ -265,9 +265,20 @@ body {
 }
 
 #profileImage {
-	width: 40%;
+	height: auto; 
+    width: auto; 
+    max-width: 150px; 
+    max-height: 150px;
 }
 
 #logout:hover{
-	cursor:pointer
+	cursor:pointer;
+}
+
+#home:hover{
+	cursor:pointer;
+}
+
+#upload:hover{
+	cursor:pointer;
 }

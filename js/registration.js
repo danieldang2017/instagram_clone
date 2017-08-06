@@ -13,7 +13,7 @@
  *Duncan Robertson. Student number: 8074833
  */
  
- module.exports.validator;
+module.exports.validator;
 
 module.exports.validate = (req, res, next) => {
     var validator = module.exports.validator;

@@ -48,7 +48,6 @@ const email = require('./js/sendmail.js');
 const hash = require('./js/hash.js');
 //create a sessions collection as well
 
-
 // 3. Establishes connection to the MongoDB 
 mongoose.connect('mongodb://instaadmin1:webadmin123@ds119682.mlab.com:19682/instagramdb', {useMongoClient: true});
 
@@ -105,7 +104,7 @@ router.get('/login', function(req, res){
   res.sendfile(path.join(__dirname, 'client/views','loginAndRegistration.html'));
 });
 
-router.get('/forgotPassword.html', function(req, res){
+router.get('/forgotPassword', function(req, res){
   res.sendfile(path.join(__dirname, 'client/views','forgotPassword.html'));
 });
 
@@ -119,7 +118,6 @@ router.get('/createPost', userAuth.isAuthenticated, (req, res) => {
 });
 
 router.get('/post/:id([A-Fa-f0-9]{24})', userAuth.isAuthenticated, (req, res) => {
-  //res.sendfile(path.join(__dirname, 'client/views', 'postDetails.html'));
   var id = req.params.id;
   Post.findById(id)
   .then((post) => {
@@ -133,65 +131,51 @@ router.get('/post/:id([A-Fa-f0-9]{24})', userAuth.isAuthenticated, (req, res) =>
       hashTags = hashTags.join(' ');
       
       res.render('postDetails.ejs', {
-        status: post.comment,
+        status: post.status,
         hashtags: hashTags,
         imagePath: '/img/instagram_img/' + post.image,
-        likes: post.likeCount
+        likes: post.likeCount,
+        feedbackCount: post.feedbackCount
       });
     } else {
-      res.sendfile(__dirname, 'client/views', 'Error.html');
+      res.sendfile(__dirname, 'client/views', 'error.html');
     }
     
   })
   .catch((err) => {
-    console.log(err);
-    res.sendfile(__dirname, 'client/views', 'Error.html');
+    res.sendfile(__dirname, 'client/views', 'error.html');
   });
 });
 
 router.post('/createPost', userAuth.isAuthenticated, (req, res) => {
-  console.log('Recieved new post submission');
   var form = new formidable.IncomingForm();
   
   form.parse(req, (err, fields, files) => {
     if(err) {
-      console.log('Post submission error');
       res.json({error: 'Submission could not be parsed', status: 400});
     } else {
-      console.log(fields);
-      console.log(files.file.path);
       var post = new Post({
         userId: req.user._id,
         image: '',
-        comment: fields.status,
+        status: fields.status,
         hashTag: fields.hashtag,
-        likeCount: 0,
+        likeCount: 1,
         feedbackCount: 0
       });
-      
       var extension = fields.name.split('.').pop();
       var shortPath = post._id.toString() + '.' + extension;
       var imagePath = path.join(__dirname, 'client/img/instagram_img', shortPath);
       
       fs.rename(files.file.path, imagePath, (err) => {
         if(err) {
-          console.log('Image move failure');
           res.json({status: 500});
         } else {
           post.image = shortPath;
           post.save()
           .then((post) => {
-            console.log('New post successfully created');
-            res.json({success: 'Successfully created new post', status: 200});
+              res.json({success: 'Successfully created new post', status: 200, user: req.user._id});
           })
           .catch((err) => {
-            console.log('Error creating new post\n' + err);
-            fs.unlink(imagePath, (err) => {
-              if(err) {
-                console.log('Image for failed post could not be deleted');
-                console.log('Please manually remove: ' + imagePath);
-              }
-            });
             res.json({status: 500});
           });
         }
@@ -199,12 +183,10 @@ router.post('/createPost', userAuth.isAuthenticated, (req, res) => {
       
     }
   });
-  
-  
 });
 
 router.get('/error',function(req, res){
-  res.sendfile(path.join(__dirname, 'client/views','Error.html'));
+  res.sendfile(path.join(__dirname, 'client/views','error.html'));
 });
 
 router.get('/success', function(req, res){
@@ -213,6 +195,10 @@ router.get('/success', function(req, res){
 
 router.get('/postList', function(req, res){
   res.sendfile(path.join(__dirname, 'client/views','postList.html'));
+});
+
+router.get('/upload', function(req, res){
+  res.sendfile(path.join(__dirname, 'client/views','upload.html'));
 });
 
 /* I. Index.html
@@ -238,6 +224,15 @@ router.post('/searchProfile', (req, res) => {
 router.post('/searchUser', (req, res) => {
   User.findOne({userName: req.body.user})
   .then((user) => {
+    res.json(user);
+  });
+});
+
+router.post('/updatePostsCount', (req, res) => {
+  User.findOne({_id: req.body.id})
+  .then((user) => {
+    user.postsCount++;
+    user.save();
     res.json(user);
   });
 });

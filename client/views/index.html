@@ -22,6 +22,7 @@ Duncan Robertson. Student number: 8074833 -->
     
     <!-- Adds CSS -->
     <link href="../css/instagramClone.css" rel="stylesheet" type="text/css">
+    <link href="../css/hide.css" rel="stylesheet" type="text/css" media="all"/>
     
     <!-- Adds JQuery -->
     <script src="../js/jquery-3.2.1.min.js"></script>
@@ -39,7 +40,7 @@ Duncan Robertson. Student number: 8074833 -->
           setUserProfile(post);
         })
         .then(() => {
-          return $.post('getTopProfiles', {max: 2});
+          return $.post('getTopProfiles', {max: 3});
         })
         .then((posts) => {
           setTopProfiles(posts);
@@ -54,49 +55,61 @@ Duncan Robertson. Student number: 8074833 -->
         $('#postCount').html(userProfile.postsCount);
         $('#followerCount').html(userProfile.followersCount);
         $('#followingCount').html(userProfile.followingCount);
-        addUserGallery(userProfile);
-        setUserGalleryContent(userProfile);
+          addUserGallery(userProfile, userProfile.postsCount);
+          setUserGalleryContent(userProfile);
       }
       
       // Function to add Gallery of user recent post to the Gallery Container
-      function addUserGallery(userProfile){
+      function addUserGallery(userProfile, postsCount){
         $('#galleryContainer').append('<div class="gallery">\
           <div class="gallery_upper">\
             <img src="" height="50px" class="profile" id="userProfileImage">\
             <h4>\
-            <a href="/postList?id='+userProfile._id+'" ><span id="userProfileUsername"></span></a> \
+            <a href="/postList?id='+userProfile._id+'" style="text-decoration: none; font-size: 25px;color: aliceblue;"><span id="userProfileUsername"></span></a> \
               <img alt="verified" src="../img/icons/icon4.png">\
               <p id="userProfileFullName"></p>\
             </h4>\
           </div>\
-          <div id="postContainer' + userProfile._id + '">\
+          <div id="postContainer0">\
           </div>\
         </div>');
-        addUserPosts(userProfile);
+        if(postsCount <= 4)
+        {
+          addUserPosts(userProfile, postsCount);
+        } else {
+          addUserPosts(userProfile, 4);
+        }
       }
       
       // Function to set content of User Upper Gallery
       function setUserGalleryContent(userProfile){
         $('#userProfileImage').attr("src","../img/profile_img/" + userProfile.imageProfile);
-        $('#userProfileUsername').html(userProfile.displayName);
-        $('#userProfileFullName').html(userProfile.firstName + ' ' + userProfile.lastName);
+        $('#userProfileUsername').html(userProfile.userName);
+        $('#userProfileFullName').html(userProfile.displayName);
       }
       
       // Function to add user Recent Posts html to Post Container
-      function addUserPosts(userProfile){
-        for (var j = 0; j < 4; j++) {
-          $('#postContainer' + userProfile._id).append('<div class="thumbnail">\
-              <a href="#">\
-                <img src="" class="cards" id="thumbnail' + userProfile._id + j +'"/>\
-              </a>\
-              <h4>\
-                <img src="../img/icons/icon2.png" id="like' + userProfile._id + j +'"  height="15px" alt="Likes">\
-                <i id="popularity' + userProfile._id + j +'"></i>\
-              </h4>\
-              <p class="text_column" id="status' + userProfile._id + j +'"></p>\
-              <p class="tag" id="hastag' + userProfile._id + j +'"></p>\
-            </div>');
-          setPostsContent(userProfile._id, j);
+      function addUserPosts(userProfile, postsCount){
+        if(postsCount == 0)
+        {
+          $('#postContainer0').append('<h4>There is no post to display</h4>');
+        } else {
+          for (var j = 0; j < postsCount; j++) {
+            $('#postContainer0').append('<div class="thumbnail">\
+                <a href="#">\
+                  <img src="" class="cards" id="thumbnail0' + userProfile._id + j +'"/>\
+                </a>\
+                <h4>\
+                  <img src="../img/icons/icon2.png" id="like0' + userProfile._id + j +'"  height="15px" alt="Likes">\
+                  <i id="popularity0' + userProfile._id + j +'"></i>\
+                  <img src="../img/icons/icon5.png" id="feedback0' + userProfile._id + j +'"  height="15px" alt="Feedbacks">\
+                  <i id="feedbackCount0' + userProfile._id + j +'"></i>\
+                </h4>\
+                <p class="text_column" id="status0' + userProfile._id + j +'"></p>\
+                <p class="tag" id="hastag0' + userProfile._id + j +'"></p>\
+              </div>');
+            setPostsContent(userProfile._id, j, true);
+          }
         }
       }
       
@@ -104,8 +117,8 @@ Duncan Robertson. Student number: 8074833 -->
       function setTopProfiles(posts){
         var topProfiles = posts;
         for (var i = 0; i < topProfiles.length; i++) {
-          addGallery(topProfiles, i);
-          setGalleryContent(topProfiles, i);
+            addGallery(topProfiles, i);
+            setGalleryContent(topProfiles, i);
         } 
       }
       
@@ -115,7 +128,7 @@ Duncan Robertson. Student number: 8074833 -->
           <div class="gallery_upper">\
             <img src="" height="50px" class="profile" id="topProfileImage' + i + '">\
             <h4>\
-            <a href="/postList?id='+topProfiles[i]._id+'" ><span id="topProfileUsername' + i + '"></span></a> \
+            <a href="/postList?id='+topProfiles[i]._id+'" style="text-decoration: none; font-size: 25px;color: aliceblue;"><span id="topProfileUsername' + i + '"></span></a> \
               <img alt="verified" src="../img/icons/icon4.png">\
               <p id="topProfileFullName' + i + '"></p>\
             </h4>\
@@ -140,138 +153,147 @@ Duncan Robertson. Student number: 8074833 -->
               <h4>\
                 <img src="../img/icons/icon2.png" id="like' + topProfiles[i]._id + j +'"  height="15px" alt="Likes">\
                 <i id="popularity' + topProfiles[i]._id + j +'"></i>\
+                <img src="../img/icons/icon5.png" id="feedback' + topProfiles[i]._id + j +'"  height="15px" alt="Feedbacks">\
+                <i id="feedbackCount' + topProfiles[i]._id + j +'"></i>\
               </h4>\
               <p class="text_column" id="status' + topProfiles[i]._id + j +'"></p>\
               <p class="tag" id="hastag' + topProfiles[i]._id + j +'"></p>\
             </div>');
-          setPostsContent(topProfiles[i]._id, j);
+          setPostsContent(topProfiles[i]._id, j, false);
         }
       }
     
       // Function to set content of Upper Gallery
       function setGalleryContent(topProfiles, i){
         $('#topProfileImage' + i).attr("src","../img/profile_img/" + topProfiles[i].imageProfile);
-        $('#topProfileUsername' + i).html(topProfiles[i].displayName);
-        $('#topProfileFullName' + i).html(topProfiles[i].firstName + ' ' + topProfiles[i].lastName);
+        $('#topProfileUsername' + i).html(topProfiles[i].userName);
+        $('#topProfileFullName' + i).html(topProfiles[i].displayName);
       }
     
       // Function to set content of Posts
-      function setPostsContent(id, j){
+      function setPostsContent(id, j, check){
         Promise.resolve()
         .then(() => {
           return $.post('getPostsContent', {id: id, max: 4});
         })
         .then((posts) => {
           var postsContent = posts;
-          
-          $("#link" + id + j).attr('href', '/post/' + postsContent[j]._id);
-          $('#thumbnail' + id + j).attr("src","../img/instagram_img/" + postsContent[j].image);
-         
-          var postid = postsContent[j]._id;
-          var likeCountTag = "popularity" + id + j;
-          
-          var likeIconIDTag = "like" + id + j;
-          isLike(postid, likeIconIDTag, likeIconIDTag);
-          $('#like' + id + j).attr('onclick','likeClick("' + postid + '", "' + likeCountTag +'","' + likeIconIDTag + '")');
-          $('#popularity' + id + j).html(postsContent[j].likeCount);
-          $('#status' + id + j).html(postsContent[j].comment);
-          $('#hastag' + id + j).html(postsContent[j].hashTag);
+          if(!postsContent)
+          {
+            $('#postContainer' + id).addClass('hide');
+          } else {
+            if(check)
+            {
+              id = '0' + id;
+            } 
+            $("#link" + id + j).attr('href', '/post/' + postsContent[j]._id);
+            $('#thumbnail' + id + j).attr("src","../img/instagram_img/" + postsContent[j].image);
+           
+            var postid = postsContent[j]._id;
+            var likeCountTag = "popularity" + id + j;
+            
+            var likeIconIDTag = "like" + id + j;
+            isLike(postid, likeIconIDTag, likeIconIDTag);
+            $('#like' + id + j).attr('onclick','likeClick("' + postid + '", "' + likeCountTag +'","' + likeIconIDTag + '")');
+            $('#popularity' + id + j).html(postsContent[j].likeCount);
+            $('#feedbackCount' + id + j).html(postsContent[j].feedbackCount);
+            $('#status' + id + j).html(postsContent[j].status);
+            $('#hastag' + id + j).html(postsContent[j].hashTag);
+          }
         });
       }
       
-          //handle a click on the LIKE button we've included with each post
-            //we receive the ID of the post as a parameter
-            function likeClick(id, likeCounttag, likeIconTag){
-              Promise.resolve()
-              .then(function(){
-                    //here we pass the ID to the incrLike route on the server side so it can do the incrementing for us
-                    //note the return. This MUST be here, or the subsequent then will not wait for this to complete
-                    return $.post('incrLike', {id : id});
-                })
-                .then(function(like){
-                    if (like.count > 0)
-                    {
-                        //jQuery provides a nice convenience method for easily setting the count to the value returned
-                        $('#' + likeCounttag).html(like.count);
-                    }
-                    if (like.result)
-                    {
-                        $('#' + likeIconTag).attr('src','../img/icons/Like.png');
-                    }
-                    else
-                    {
-                       $('#' + likeIconTag).attr('src','../img/icons/icon2.png');
-                    }
-                })
-                .catch(function(err){
-                    //always include a catch for the promise chain
-                    console.log(err);
-                });
-            }
+      //handle a click on the LIKE button we've included with each post
+      //we receive the ID of the post as a parameter
+      function likeClick(id, likeCounttag, likeIconTag){
+        Promise.resolve()
+        .then(function(){
+              //here we pass the ID to the incrLike route on the server side so it can do the incrementing for us
+              //note the return. This MUST be here, or the subsequent then will not wait for this to complete
+              return $.post('incrLike', {id : id});
+          })
+          .then(function(like){
+              if (like.count > 0)
+              {
+                  //jQuery provides a nice convenience method for easily setting the count to the value returned
+                  $('#' + likeCounttag).html(like.count);
+              }
+              if (like.result)
+              {
+                  $('#' + likeIconTag).attr('src','../img/icons/Like.png');
+              }
+              else
+              {
+                 $('#' + likeIconTag).attr('src','../img/icons/icon2.png');
+              }
+          })
+          .catch(function(err){
+              //always include a catch for the promise chain
+              console.log(err);
+          });
+      }
 
-            function isLike(postID, likeIconID)
-            {
-              Promise.resolve()
-              .then(function(){
-              return $.post('isLike', {id : postID});
-                })
-              .then(function(result){
-                if(result)
-                {
-                  console.log("true")
-                   $('#' + likeIconID).attr("src","../img/icons/Like.png");
-                }
-              })
-            }
+      function isLike(postID, likeIconID)
+      {
+        Promise.resolve()
+        .then(function(){
+        return $.post('isLike', {id : postID});
+          })
+        .then(function(result){
+          if(result)
+          {
+            console.log("true")
+             $('#' + likeIconID).attr("src","../img/icons/Like.png");
+          }
+        })
+      }
       
-            //handle a click on the Follow button 
-            //we receive the ID of user as a parameter
-            function followerClick(followButtonID, followUserID){
-              console.log(followButtonID);
-              console.log(followUserID);
-              Promise.resolve()
-              .then(function(){
-                    return $.post('incrFollow', {followid : followUserID});
-                })
-                .then(function(user){
-                    if (user.followingCount > 0)
-                    {
-                        $('#followingCount').html(user.followingCount);
-                    }
-                    if (user.result)
-                    {
-                        $('#' + followButtonID).html('Following');
-                    }
-                    else
-                    {
-                        $('#' + followButtonID).html('Follow');
-                    }
-                })
-                .catch(function(err){
-                    //always include a catch for the promise chain
-                    console.log(err);
-                });
-            }
-            
-            // Check whether the user is followed or not in order to display following button
-            function isFollow(followButtonID, followUserID)
-            {
-              Promise.resolve()
-               .then(function(){
-                  return $.post('isFollow', {followId : followUserID});
-                })
-                // Display as following wehn
-              .then(function(result){
-                if(result)
-                {
-                   $('#' + followButtonID).html('Following');
-                }
-              })
-            }
+      //handle a click on the Follow button 
+      //we receive the ID of user as a parameter
+      function followerClick(followButtonID, followUserID){
+        console.log(followButtonID);
+        console.log(followUserID);
+        Promise.resolve()
+        .then(function(){
+              return $.post('incrFollow', {followid : followUserID});
+          })
+          .then(function(user){
+              if (user.followingCount > 0)
+              {
+                  $('#followingCount').html(user.followingCount);
+              }
+              if (user.result)
+              {
+                  $('#' + followButtonID).html('Following');
+              }
+              else
+              {
+                  $('#' + followButtonID).html('Follow');
+              }
+          })
+          .catch(function(err){
+              //always include a catch for the promise chain
+              console.log(err);
+          });
+      }
       
+      // Check whether the user is followed or not in order to display following button
+      function isFollow(followButtonID, followUserID)
+      {
+        Promise.resolve()
+         .then(function(){
+            return $.post('isFollow', {followId : followUserID});
+          })
+          // Display as following wehn
+        .then(function(result){
+          if(result)
+          {
+             $('#' + followButtonID).html('Following');
+          }
+        })
+      }
     </script>
   </head>
-  
   <body onload="loadPage();">
     
     <!-- Main Container -->
@@ -293,7 +315,7 @@ Duncan Robertson. Student number: 8074833 -->
           <img src="" class="profile" alt="Profile image" id="profileImage"> 
         </div>
         <div class="intro_column">
-          <p><strong>Welcome to Instagram!</strong></p>
+          <p id="test"><strong>Welcome to Instagram!</strong></p>
           <p>Follow accounts to see photos in your feed.</p>
           <p><strong><i id="postCount"></i></strong> posts<span class="summary"><strong><i id="followerCount"></i></strong> followers</span> <span class="summary"><strong><i id="followingCount"></i></strong> following</span></p>
         </div>

@@ -9,8 +9,8 @@
   
 </div>
 <div class="header_right">
-  <a href="../views/postDetails.html"><img src="img/icons/icon2.png" alt="Favorite photos"></a>
-  <a href="../views/upload.html"><img src="img/icons/icon3.png" alt="Profile"></a>
+  <img src="img/icons/add.png" alt="Upload" id="upload">
+  <img src="img/icons/icon3.png" alt="Home" id="home">
   <img src="img/icons/icon1.png" alt="Logout" id="logout">
 </div>
 
@@ -23,13 +23,23 @@
     });
   });
   
+  $('#home').click( () => {
+    window.location.replace('/');
+  });
+  
   $('#search').submit( () => {
     $.post('/searchUser', {user: $('#searchBox').val()})
     .done((user) => {
-      console.log(user._id);
+      if(user)
+      {
       window.location.replace('/postList?id=' + user._id);
+      } else {
+        window.location.replace('/error?e=userNotFound');
+      }
     })
-    console.log('search test')
-    return false;
   })
+  
+  $('#upload').click( () => {
+    window.location.replace('/upload' );
+  });
 </script>

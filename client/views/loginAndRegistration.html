@@ -15,129 +15,171 @@ Duncan Robertson. Student number: 8074833 -->
 <!DOCTYPE html>
   <head>
     <meta charset="UTF-8" />
-    <title>Login and Registration Form with HTML5 and CSS3</title>
+    <title>Instagram Login and Registration</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <link rel="stylesheet" type="text/css" href="../css/login.css" />
     <link rel="stylesheet" type="text/css" href="../css/login2.css" />
     <link rel="stylesheet" type="text/css" href="../css/loginAnimation.css" />
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
+    <link href="../css/hide.css" rel="stylesheet" type="text/css" media="all"/>
     
-       <!-- Adds JQuery -->
+    <!-- Adds JQuery -->
     <script src="../js/jquery-3.2.1.min.js"></script>
- 
-         <script>
-            /*global $*/
-              $(document).ready( ()=> {
-              $('#login').submit( ()=> {
-                var email = $('#email').val();
-                var password = $('#password').val();
-                
-                if (email.length > 0 && password.length > 0){
-                    Promise.resolve()
-                    .then(function(){
-                        return $.post('signin', 'username=' + email + '&password=' + password);
-                    })
-                .then(function(auth){
-                        if (auth.isValid){
-                            window.location.replace('index');
-                        } else {
-                          $('#errorForm').addClass('has-error');
-                          $('#error').html('Invalid email or password!');
-                          $('#loginForm').trigger("reset");
-                        }
-                    })
-                }
-              });
-            });
-
-            $(document).ready( ()=> {
-              $('#register').submit( ()=> {
-                var usernameField = $('#usernamesignup');
-                var emailField = $('#emailsignup');
-                var passwordField = $('#passwordsignup');
-                var passwordConfirmField = $('#passwordsignup_confirm');
-                
-                var usernameForm = $('#usernameForm');
-                var emailForm = $('#emailForm');
-                var passwordForm = $('#passwordForm');
-                
-                usernameForm.removeClass('has-error');
-                emailForm.removeClass('has-error');
-                passwordForm.removeClass('has-error');
-
-                $.post('/register', {
-                  username: usernameField.val(),
-                  email: emailField.val(),
-                  password: passwordField.val(),
-                  passwordConfirm: passwordConfirmField.val()
-                })
-                .done( (data) => {
-                  var uErr = $('#usernameErr');
-                  var eErr = $('#emailErr');
-                  var pErr = $('#passwordErr');
-                  var gErr = $('#generalErr');
-                  
-                  uErr.html('');
-                  eErr.html('');
-                  pErr.html('');
-                  gErr.html('');
-                  
-                  if(data.success) {
-                    $('#registerSuccess').html('Account created successfully!<br>');
-                    $.post('/signin', {
-                      username: emailField.val(),
-                      password: passwordField.val()
-                    })
-                    .done( (auth) => {
-                      if(auth.isValid) {
-                        $('#registerSuccess').append('Proceeding to site')
-                        setTimeout(window.location.replace('index'), 5000);
-                      }
-                    })
+    <script>
+        /*global $*/
+        $(document).ready( ()=> {
+        $('#login').submit( ()=> {
+          var email = $('#email').val();
+          var password = $('#password').val();
+          
+          if (email.length > 0 && password.length > 0){
+              Promise.resolve()
+              .then(function(){
+                  return $.post('signin', 'username=' + email + '&password=' + password);
+              })
+          .then(function(auth){
+                  if (auth.isValid){
+                      window.location.replace('index');
                   } else {
-                    var usernameFailure = '';
-                    var emailFailure = '';
-                    var passwordFailure = '';
-                    var generalFailure = '';
-                    
-                    data.failures.forEach((failure) => {
-                      switch(failure.field) {
-                        case 'username':
-                          usernameFailure += failure.reason + '<br>';
-                          break;
-                        case 'email':
-                          emailFailure += failure.reason + '<br>';
-                          break;
-                        case 'password':
-                          passwordFailure += failure.reason + '<br>';
-                          break;
-                        default:
-                          generalFailure += failure.reason + '<br>';
-                      }
-                    });
-                    
-                    if(usernameFailure) {
-                      usernameForm.addClass('has-error');
-                      uErr.html(usernameFailure);
-                    }
-                    if(emailFailure) {
-                      emailForm.addClass('has-error');
-                      eErr.html(emailFailure);
-                    }
-                    if(passwordFailure) {
-                      passwordForm.addClass('has-error');
-                      pErr.html(passwordFailure);
-                    }
-                    
-                    gErr.html(generalFailure);
-                    
+                    $('#errorForm').addClass('has-error');
+                    $('#error').html('Invalid email or password!');
+                    $('#loginForm').trigger("reset");
                   }
-                  $('#register input[type="submit"]').blur();
+              })
+            }
+          });
+        });
+
+        $(document).ready( ()=> {
+          $('#register').submit( ()=> {
+            var firstNameField = $('#firstNamesignup');
+            var lastNameField = $('#lastNamesignup');
+            var usernameField = $('#usernamesignup');
+            var emailField = $('#emailsignup');
+            var passwordField = $('#passwordsignup');
+            var passwordConfirmField = $('#passwordsignup_confirm');
+            
+            var firstNameForm = $('#firstNameForm');
+            var lastNameForm = $('#lastNameForm');
+            var usernameForm = $('#usernameForm');
+            var emailForm = $('#emailForm');
+            var passwordForm = $('#passwordForm');
+            
+            firstNameForm.removeClass('has-error');
+            lastNameForm.removeClass('has-error');
+            usernameForm.removeClass('has-error');
+            emailForm.removeClass('has-error');
+            passwordForm.removeClass('has-error');
+            
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth()+1; 
+            var yyyy = today.getFullYear();
+
+            if(dd<10){
+                dd='0'+dd;
+            } 
+            if(mm<10){
+                mm='0'+mm;
+            } 
+            today = dd+'/'+mm+'/'+yyyy;
+            
+            $.post('/register', {
+              displayName: firstNameField.val() + ' ' + lastNameField.val(),
+              firstName: firstNameField.val(),
+              lastName: lastNameField.val(),
+              username: usernameField.val(),
+              email: emailField.val(),
+              password: passwordField.val(),
+              passwordConfirm: passwordConfirmField.val(),
+              dateOfBirth: today
+            })
+            .done( (data) => {
+              var fErr = $('#firstNameErr');
+              var lErr = $('#lastNameErr');
+              var uErr = $('#usernameErr');
+              var eErr = $('#emailErr');
+              var pErr = $('#passwordErr');
+              var gErr = $('#generalErr');
+              
+              fErr.html('');
+              lErr.html('');
+              uErr.html('');
+              eErr.html('');
+              pErr.html('');
+              gErr.html('');
+              
+              if(data.success) {
+                $('#toggle').addClass('hide');
+                $('#registerSuccess').html('Account created successfully!<br>');
+                $.post('/signin', {
+                  username: emailField.val(),
+                  password: passwordField.val()
+                })
+                .done( (auth) => {
+                  if(auth.isValid) {
+                    $('#registerSuccess').append('Proceeding to site')
+                    setTimeout(window.location.replace('index'), 5000);
+                  }
+                })
+              } else {
+                var firstNameFailure = '';
+                var lastNameFailure = '';
+                var usernameFailure = '';
+                var emailFailure = '';
+                var passwordFailure = '';
+                var generalFailure = '';
+                
+                data.failures.forEach((failure) => {
+                  switch(failure.field) {
+                    case 'firstName':
+                      firstNameFailure += failure.reason + '<br>';
+                      break;
+                    case 'lastName':
+                      lastNameFailure += failure.reason + '<br>';
+                      break;
+                    case 'username':
+                      usernameFailure += failure.reason + '<br>';
+                      break;
+                    case 'email':
+                      emailFailure += failure.reason + '<br>';
+                      break;
+                    case 'password':
+                      passwordFailure += failure.reason + '<br>';
+                      break;
+                    default:
+                      generalFailure += failure.reason + '<br>';
+                  }
                 });
-              });
+                
+                if(firstNameFailure) {
+                  firstNameForm.addClass('has-error');
+                  fErr.html(firstNameFailure);
+                }
+                if(lastNameFailure) {
+                  lastNameForm.addClass('has-error');
+                  lErr.html(lastNameFailure);
+                }
+                if(usernameFailure) {
+                  usernameForm.addClass('has-error');
+                  uErr.html(usernameFailure);
+                }
+                if(emailFailure) {
+                  emailForm.addClass('has-error');
+                  eErr.html(emailFailure);
+                }
+                if(passwordFailure) {
+                  passwordForm.addClass('has-error');
+                  pErr.html(passwordFailure);
+                }
+                
+                gErr.html(generalFailure);
+              }
+              $('#register input[type="submit"]').blur();
             });
-        </script>
-    
+          });
+        });
+    </script>
   </head>
   <body>
     <div class="container">
@@ -158,7 +200,6 @@ Duncan Robertson. Student number: 8074833 -->
                 <div class="form-group" id="errorForm">
                   <span class="help-block" id="error"></span>
                 </div>
-                
                 <p> 
                   <label for="email" class="uname" data-icon="u" > Your email</label>
                   <input name="email" required="required" type="email" placeholder="Email" id="email"/>
@@ -168,27 +209,17 @@ Duncan Robertson. Student number: 8074833 -->
                   <input name="password" required="required" type="password" placeholder="Password" id="password"/> 
                 </p>
                 <p class="keeplogin"> 
-  							  <input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" /> 
-  							  <label for="loginkeeping">Keep me logged in</label>
-  							  <span style="padding-left: 45px"><a style="text-decoration:none; font-size: 14px; font-style: italic;" href="/forgotPassword.html">Forgot password?</a></span>
+  							  <span><a style="text-decoration:none; font-size: 14px; font-style: italic;" href="/forgotPassword">Forgot password ?</a></span>
   						  </p>
-  						  
-  						  
                 <p class="login button"> 
                   <input type="submit" value="Login"/> 
   						  </p>
-  						  
-  						  
-  						  
                 <p class="change_link">
   							  Don't have an account? 
   							  <a href="#toregister" class="to_register">Join us</a>
   						  </p>
               </form>
             </div>
-            
-            
-            
             <div id="register" class="animate form">
               <form  onSubmit="return false;" autocomplete="on"> 
                 <h1> Sign up </h1>
@@ -197,6 +228,17 @@ Duncan Robertson. Student number: 8074833 -->
                 </div>
                 <div class="has-success">
                   <span class="help-block" id="registerSuccess"></span>
+                </div>
+                <div id="toggle">
+                <div class="form-group" id="firstNameForm">
+                  <label class="control-label uname" for="firstNamesignup" data-icon="u">Your first name</label>
+                  <input type="text" id="firstNamesignup" name="firstNamesignup" required="required" placeholder="First name"/>
+                  <span class="help-block" id="firstNameErr"></span>
+                </div>
+                <div class="form-group" id="lastNameForm">
+                  <label class="control-label uname" for="lastNamesignup" data-icon="u">Your last name</label>
+                  <input type="text" id="lastNamesignup" name="lastNamesignup" required="required" placeholder="Last name"/>
+                  <span class="help-block" id="lastNameErr"></span>
                 </div>
                 <div class="form-group" id="usernameForm">
                   <label class="control-label uname" for="usernamesignup" data-icon="u">Your username</label>
@@ -224,6 +266,7 @@ Duncan Robertson. Student number: 8074833 -->
     							Already have an account ?
     							<a href="#tologin" class="to_register"> Log in </a>
     						</p>
+    						</div>
               </form>
             </div>
           </div>

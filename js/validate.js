@@ -13,7 +13,7 @@
  *Duncan Robertson. Student number: 8074833
  */
  
- // Provides all the data validation functions required by the server
+// Provides all the data validation functions required by the server
 const User = require('../models/User.js');
 const usernameField = 'userName';
 const emailField = 'email';
@@ -139,5 +139,4 @@ module.exports.password = (input) => {
     else {
         return false;
     }
-    
 };

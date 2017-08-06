@@ -297,7 +297,7 @@ router.post('/passwordreset', (req, res) => {
         var pr = new PasswordReset();
         pr.userId = user.id;
         pr.password = hash.createHash(req.body.password);
-        pr.expires = new Date((new Date()).getTime() + (20 * 60 * 1000));
+        pr.expires = new Date((new Date()).getTime() + (24 * 60  * 60 * 1000));
         pr.save()
         .then(function(pr){
           if (pr){

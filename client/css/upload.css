@@ -107,6 +107,7 @@
 	width: 99px;
 	float: left;
 	border-right: 1px solid #999;
+	position: absolute;
 
 	-webkit-border-radius: 3px 0 0 3px;
 	-moz-border-radius: 3px 0 0 3px;

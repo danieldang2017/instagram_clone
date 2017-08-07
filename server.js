@@ -297,7 +297,7 @@ router.post('/passwordreset', (req, res) => {
         .then(function(pr){
           if (pr){
             var url = req.protocol + '://' + req.headers.host;
-            var emailBody = "Dear " + user.firstName + " " + user.firstName + "," + "\n \n";
+            var emailBody = "Dear " + user.firstName + " " + user.lastName + "," + "\n \n";
             emailBody = emailBody + "We have received a request to reset the password for this email. \n"
             emailBody = emailBody + "Please click on the link below to confirm your new password. \n \n"
             emailBody = emailBody + url + '/verifypassword?id=' + pr.id;

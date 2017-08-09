@@ -159,7 +159,7 @@ router.post('/createPost', userAuth.isAuthenticated, (req, res) => {
         image: '',
         status: fields.status,
         hashTag: fields.hashtag,
-        likeCount: 1,
+        likeCount: 0,
         feedbackCount: 0
       });
       var extension = fields.name.split('.').pop();

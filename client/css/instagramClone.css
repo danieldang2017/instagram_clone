@@ -190,8 +190,8 @@ body {
 .cards {
 	width: 100%;
 	height: auto;
-	max-width: 400px;
-	max-height: 400px;
+	max-width: 350px;
+	max-height: 350px;
 	opacity: 0.8;
 }
 .tag {
